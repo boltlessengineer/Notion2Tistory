@@ -17,7 +17,7 @@ namespace Notion2TistoryConsole
         public bool acceptComent; // 댓글 허용 (POST 요청은 0, 1)
         public string password; // 보호글 비밀번호
 
-        public Content(string t, string c)
+        public Content(string t, string c = "empty page")
         {
             title = t;
             content = c;
@@ -36,6 +36,10 @@ namespace Notion2TistoryConsole
         public void SetCategory(int c = 0)
         {
             categoryId = c;
+        }
+        public void SetTags(List<string> tag)
+        {
+            tags = tag;
         }
         public void AddTag(string tag)
         {

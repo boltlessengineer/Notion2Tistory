@@ -28,31 +28,40 @@ namespace Notion2TistoryConsole
             while (Console.ReadKey().Key != ConsoleKey.Q) ;
         }
 
-        private void Created(object source, FileSystemEventArgs e)
+        private void Created(object source, FileSystemEventArgs ev)
         {
-            if(targetFile == e.Name)//파일 생성 감지 이벤트 중복 방지
+            if(targetFile == ev.Name)//파일 생성 감지 이벤트 중복 방지
             {
                 targetFile = "";
-                Console.WriteLine(e.FullPath);
-                string extractPath = TargetPath + @"tmp\";
-                ZipFile.ExtractToDirectory(e.FullPath, extractPath);
-                DirectoryInfo tmpDir = new DirectoryInfo(extractPath);
+                Console.WriteLine(ev.FullPath);
+                string tmpPath = TargetPath + @"tmp\";
+                ZipFile.ExtractToDirectory(ev.FullPath, tmpPath);
+                DirectoryInfo tmpDir = new DirectoryInfo(tmpPath);
                 foreach (FileInfo file in tmpDir.GetFiles())
                 {
                     if (file.Extension.ToLower() == ".html")
                     {
                         Console.WriteLine("{0} is html file", file.Name);
+
                         string htmlContent = File.ReadAllText(file.FullName);
-                        Console.WriteLine(htmlContent);
+                        
+                        Converter converter = new Converter();
+
+                        Content content = converter.GetContent(htmlContent);
                     }
                 }
-                // /tmp 경로에서 html 형식의 파일 찾아서 열고 string으로 저장해서 다른 객체로 전달
-                // 마지막엔 tmp 폴더 삭제
-                // 전체랑 조금조금씩 try catch 문으로 쌀것!
+                try
+                {
+                    Directory.Delete(tmpPath, true);
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
             else
             {
-                targetFile = e.Name;
+                targetFile = ev.Name;
             }
         }
     }
