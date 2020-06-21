@@ -7,7 +7,7 @@ namespace Notion2TistoryConsole
 {
     class Converter
     {
-        string comment = "Uploaded by Notion2Tistory v1.0";
+        string comment = "<p>\n</p><p class=\"block-color-gray\">Uploaded by Notion2Tistory v1.0</p>";
         public Content GetContent(string c)
         {
             string header = ExtractHeader(c);
@@ -282,18 +282,15 @@ namespace Notion2TistoryConsole
         {
             // <body> 태그 안쪽만 남김 (<article> 태그)
             string changedContent = SubByString(content, "<body>", "</body>");
+            
+            // 헤더 삭제
+            changedContent = changedContent.Split("<header>")[0] + changedContent.Split("</header>")[1];
 
             // Notion_P CSS 적용
             changedContent = changedContent.Replace("page sans\">", "Notion_P page sans\">");
 
-            // 빈 블럭
-            changedContent = changedContent.Replace("</p>", "&nbsp;</p>");
-
             // 토글 전부 접기
             changedContent = changedContent.Replace("class=\"toggle\"><li><details open=\"\"><summary>", "class=\"toggle\"><li><details><summary>");
-            
-            // 헤더 삭제
-            changedContent = changedContent.Split("<header>")[0] + changedContent.Split("</header>")[1];
 
             // Embed 형식으로 변환
             changedContent = MakeEmbed(changedContent);
@@ -303,6 +300,7 @@ namespace Notion2TistoryConsole
 
             return changedContent;
         }
+
         private static string MakeEmbed(string content)
         {
             string url;

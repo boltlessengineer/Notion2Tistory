@@ -5,6 +5,9 @@ using System.Text;
 using System.IO;
 using System.Web;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Notion2TistoryConsole
 {
@@ -12,6 +15,7 @@ namespace Notion2TistoryConsole
     {
         public const string oauthUrl = "https://www.tistory.com/oauth/authorize";
         public const string accessUrl = "https://www.tistory.com/oauth/access_token";
+        private const string apiBaseUrl = "https://www.tistory.com/apis/";
 
         public static string clientID;
         public static string clientSK;
@@ -140,6 +144,39 @@ namespace Notion2TistoryConsole
             byte[] byteDataParams = UTF8Encoding.UTF8.GetBytes(str);
             string encodedParams = HttpUtility.UrlEncode(byteDataParams, 0, byteDataParams.Length);
             return encodedParams;
+        }
+
+        public static async string UploadImage()
+        {
+            string replacer = "";
+
+            HttpClient httpClient = new HttpClient();
+            MultipartFormDataContent form = new MultipartFormDataContent();
+
+            form.Add(new StringContent(accessToken), "username");
+
+            return replacer;
+        }
+
+        public static async Task<JObject> SendAPIPost(string postUrl, IEnumerable<KeyValuePair<string, string>> contentDict)
+        {
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(apiBaseUrl);
+            var param = new FormUrlEncodedContent(contentDict);
+            Console.WriteLine(contentDict);
+            var result = await client.PostAsync(postUrl, param);
+            string responseString = await result.Content.ReadAsStringAsync();
+            JObject json = JObject.Parse(responseString);
+            if (json["tistory"]["status"].ToString() == "200")
+            {
+                Console.WriteLine("Task Success!");
+            }
+            else
+            {
+                Console.WriteLine("ERROR : Server returned error | status: {0}", json["tistory"]["status"]);
+                Console.WriteLine(json["tistory"]["error_message"]);
+            }
+            return json;
         }
     }
 }
