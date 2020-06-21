@@ -104,7 +104,8 @@ namespace Notion2TistoryConsole
                 int findFrom = strResult.IndexOf("?code=") + 6;
                 int findTo = strResult.IndexOf("&state") - findFrom;
                 string code = strResult.Substring(findFrom, findTo);
-                Console.WriteLine($"Authorization code : {code}");
+                Console.WriteLine("Got Authorization code");
+                //Console.WriteLine($"Authorization code : {code}");
                 return code;
             }
             catch (Exception e)
@@ -127,7 +128,8 @@ namespace Notion2TistoryConsole
                     StreamReader reader = new StreamReader(dataStream);
                     string responseFromServer = reader.ReadToEnd();
                     token = responseFromServer.Substring(13);
-                    Console.WriteLine($"Access Token : {token}");
+                    Console.WriteLine("Got Access Token");
+                    //Console.WriteLine($"Access Token : {token}");
                 }
                 response.Close();
                 return token;
@@ -144,38 +146,6 @@ namespace Notion2TistoryConsole
             byte[] byteDataParams = UTF8Encoding.UTF8.GetBytes(str);
             string encodedParams = HttpUtility.UrlEncode(byteDataParams, 0, byteDataParams.Length);
             return encodedParams;
-        }
-
-        public static async Task<string> UploadFile()
-        {
-            string replacer = "";
-
-            HttpClient httpClient = new HttpClient();
-            MultipartFormDataContent form = new MultipartFormDataContent();
-
-            form.Add(new StringContent(accessToken), "access_token");
-            form.Add(new StringContent("json"), "output");
-            form.Add(new StringContent(blogName), "blogName");
-
-            HttpResponseMessage response = await httpClient.PostAsync("", form);
-            string responseString = await response.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(responseString);
-
-            var j = Task.Run(() => SendAPIPost("post/attach", form));
-
-            Console.WriteLine(json);
-
-            if (json["tistory"]["status"].ToString() == "200")
-            {
-                Console.WriteLine("Task Success!");
-            }
-            else
-            {
-                Console.WriteLine("ERROR : Server returned error | status: {0}", json["tistory"]["status"]);
-                Console.WriteLine(json["tistory"]["error_message"]);
-            }
-
-            return replacer;
         }
 
         public static async Task<JObject> SendAPIPost(string postUrl, HttpContent content)

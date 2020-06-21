@@ -37,16 +37,16 @@ namespace Notion2TistoryConsole
             userID = readTxt.Split("|")[3];
             userPW = readTxt.Split("|")[4];
             blogName = readTxt.Split("|")[5];
-            Console.WriteLine("{0}\n{1}\n{2}\n{3}\n{4}\n{5}", clientId, clientSK, redirect, userID, userPW, blogName);
+            //Console.WriteLine("{0}\n{1}\n{2}\n{3}\n{4}\n{5}", clientId, clientSK, redirect, userID, userPW, blogName);
 
             TistoryAPI client = new TistoryAPI(clientId, clientSK, redirect, userID, userPW, blogName);
-            string at = client.AccessToken();
             /*
             FileWatcher watcher = new FileWatcher(client);
 
             watcher.InitWatcher();
             Console.Read();
             */
+            string at = client.AccessToken();
             string result;
             result = RequestHelper.PostMultipart(
                 "https://www.tistory.com/apis/post/attach",
@@ -68,13 +68,15 @@ namespace Notion2TistoryConsole
             Console.WriteLine(json);
             string replacer = json["tistory"]["replacer"].ToString();
             string url = json["tistory"]["url"].ToString();
-            Console.WriteLine("Replacer : {0}", replacer);
-            // [##_1N|cfile3.uf@9999893E5EEF34D434F433|width="500" height="500" filename="blbd_no_pstg_no" filemime="image/png"|_##]
-            // http://cfile3.uf.tistory.com/image/9999893E5EEF34D434F433
+
             string imageId = url.Substring(url.IndexOf("image/") + 6, url.Length - url.IndexOf("image/") - 10);
             string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|||_##]";
+            Console.WriteLine("===========================================================");
+            Console.WriteLine("Replacer : {0}", replacer);
+            Console.WriteLine("Url      : {0}", url);
+            Console.WriteLine("===========================================================");
             Console.WriteLine("Image Replacer : {0}", imageReplacer);
-            
+            Console.WriteLine("===========================================================");
         }
 
         // https://spirit32.tistory.com/21

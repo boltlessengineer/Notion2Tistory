@@ -363,6 +363,36 @@ namespace Notion2TistoryConsole
             return url;
         }
 
+        public class ReplaceImage
+        {
+            public static string ChangeImageTag(string content, string[] imageList)
+            {
+                foreach(string image in imageList)
+                {
+                    if (content.Contains(image))
+                    {
+                        string replacer = string.Empty;
+                        try
+                        {
+                            //replacer = UploadImage(image, client);
+                            // 이걸 위해 API client 관련 싹 리팩토링. Converter 정도면 client 받아와도 되겠다
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Can't upload image : {0}", image);
+                        }
+                    }
+                }
+                return content;
+            }
+            private static string UploadImage(string imagePath, TistoryAPI client)//imagePath 대신 TistoryAPI.FormFile
+            {
+                string replacer = string.Empty;
+
+                return replacer;
+            }
+        }
+
         // 자주 사용하는 함수
         private static string SubByString(string s, string from, string to)
         {
