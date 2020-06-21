@@ -7,8 +7,8 @@ namespace Notion2TistoryConsole
 {
     class Converter
     {
-        string comment = "<p>\n</p><p class=\"block-color-gray\">Uploaded by Notion2Tistory v1.0</p>";
-        public Content GetContent(string c)
+        static string comment = "<p>\n</p><p class=\"block-color-gray\">Uploaded by Notion2Tistory v1.0</p>";
+        public static Content GetContent(string c)
         {
             string header = ExtractHeader(c);
 
@@ -29,13 +29,13 @@ namespace Notion2TistoryConsole
             return content;
         }
 
-        public string ExtractHeader(string c)
+        public static string ExtractHeader(string c)
         {
             string header = c.Split("<header>")[1].Split("</header>")[0];
             return header;
         }
 
-        private string GetTitle(string header)
+        private static string GetTitle(string header)
         {
             string title = "Notion Page";
             try
@@ -51,7 +51,7 @@ namespace Notion2TistoryConsole
             return title;
         }
 
-        private int GetVisibilityType(Dictionary<string, string> table)
+        private static int GetVisibilityType(Dictionary<string, string> table)
         {
             int type = 0;
             try
@@ -100,7 +100,7 @@ namespace Notion2TistoryConsole
             return type;
         }
 
-        private int GetCategoryId(Dictionary<string, string> table)
+        private static int GetCategoryId(Dictionary<string, string> table)
         {
             int category = 0;
             try
@@ -132,7 +132,7 @@ namespace Notion2TistoryConsole
             return category;
         }
 
-        private List<string> GetTags(Dictionary<string, string> table)
+        private static List<string> GetTags(Dictionary<string, string> table)
         {
             List<string> tags = new List<string>();
             try
@@ -164,7 +164,7 @@ namespace Notion2TistoryConsole
             return tags;
         }
 
-        private bool GetAcceptComment(Dictionary<string, string> table)
+        private static bool GetAcceptComment(Dictionary<string, string> table)
         {
             bool accept = false;
             try
@@ -209,7 +209,7 @@ namespace Notion2TistoryConsole
             return accept;
         }
 
-        private string GetPassword(Dictionary<string, string> table)
+        private static string GetPassword(Dictionary<string, string> table)
         {
             string password = "";
             try
@@ -241,7 +241,7 @@ namespace Notion2TistoryConsole
             return password;
         }
 
-        private Dictionary<string, string> ReadTable(string table)
+        private static Dictionary<string, string> ReadTable(string table)
         {
             Dictionary<string, string> Table = new Dictionary<string, string>();
             // type : number, relation, select, multiselect, text, checkbox...
@@ -278,7 +278,7 @@ namespace Notion2TistoryConsole
         }
 
 
-        private string ChangeHtml(string content)
+        private static string ChangeHtml(string content)
         {
             // <body> 태그 안쪽만 남김 (<article> 태그)
             string changedContent = SubByString(content, "<body>", "</body>");

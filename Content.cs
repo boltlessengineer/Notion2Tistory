@@ -97,7 +97,6 @@ namespace Notion2TistoryConsole
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(apiBaseUrl);
             var param = new FormUrlEncodedContent(contentDict);
-            Console.WriteLine(contentDict);
             var result = await client.PostAsync(postUrl, param);
             string responseString = await result.Content.ReadAsStringAsync();
             JObject json = JObject.Parse(responseString);

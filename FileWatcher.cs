@@ -50,10 +50,8 @@ namespace Notion2TistoryConsole
                         Console.WriteLine("{0} is html file", file.Name);
 
                         string htmlContent = File.ReadAllText(file.FullName);
-                        
-                        Converter converter = new Converter();
 
-                        Content content = converter.GetContent(htmlContent);
+                        Content content = Converter.GetContent(htmlContent);
 
                         content.WritePost(apiClient).Wait();
                     }

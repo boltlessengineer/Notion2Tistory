@@ -146,25 +146,43 @@ namespace Notion2TistoryConsole
             return encodedParams;
         }
 
-        public static async string UploadImage()
+        public static async Task<string> UploadFile()
         {
             string replacer = "";
 
             HttpClient httpClient = new HttpClient();
             MultipartFormDataContent form = new MultipartFormDataContent();
 
-            form.Add(new StringContent(accessToken), "username");
+            form.Add(new StringContent(accessToken), "access_token");
+            form.Add(new StringContent("json"), "output");
+            form.Add(new StringContent(blogName), "blogName");
+
+            HttpResponseMessage response = await httpClient.PostAsync("", form);
+            string responseString = await response.Content.ReadAsStringAsync();
+            JObject json = JObject.Parse(responseString);
+
+            var j = Task.Run(() => SendAPIPost("post/attach", form));
+
+            Console.WriteLine(json);
+
+            if (json["tistory"]["status"].ToString() == "200")
+            {
+                Console.WriteLine("Task Success!");
+            }
+            else
+            {
+                Console.WriteLine("ERROR : Server returned error | status: {0}", json["tistory"]["status"]);
+                Console.WriteLine(json["tistory"]["error_message"]);
+            }
 
             return replacer;
         }
 
-        public static async Task<JObject> SendAPIPost(string postUrl, IEnumerable<KeyValuePair<string, string>> contentDict)
+        public static async Task<JObject> SendAPIPost(string postUrl, HttpContent content)
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(apiBaseUrl);
-            var param = new FormUrlEncodedContent(contentDict);
-            Console.WriteLine(contentDict);
-            var result = await client.PostAsync(postUrl, param);
+            var result = await client.PostAsync(postUrl, content);
             string responseString = await result.Content.ReadAsStringAsync();
             JObject json = JObject.Parse(responseString);
             if (json["tistory"]["status"].ToString() == "200")
