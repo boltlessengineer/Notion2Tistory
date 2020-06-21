@@ -10,6 +10,12 @@ namespace Notion2TistoryConsole
     {
         public static string TargetPath = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_Notion_Export\";
         private string targetFile = "";
+        public TistoryAPI apiClient;
+
+        public FileWatcher(TistoryAPI api)
+        {
+            apiClient = api;
+        }
         
         public void InitWatcher()
         {
@@ -25,7 +31,7 @@ namespace Notion2TistoryConsole
             watcher.EnableRaisingEvents = true;
 
             Console.WriteLine("Press 'q' to quit the sample.");
-            while (Console.ReadKey().Key != ConsoleKey.Q) ;
+            //while (Console.ReadKey().Key != ConsoleKey.Q) ;
         }
 
         private void Created(object source, FileSystemEventArgs ev)
@@ -48,6 +54,8 @@ namespace Notion2TistoryConsole
                         Converter converter = new Converter();
 
                         Content content = converter.GetContent(htmlContent);
+
+                        content.WritePost(apiClient).Wait();
                     }
                 }
                 try

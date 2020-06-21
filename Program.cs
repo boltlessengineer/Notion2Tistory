@@ -9,9 +9,6 @@ namespace Notion2TistoryConsole
     {
         private static void Main(string[] args)
         {
-            FileWatcher watcher = new FileWatcher();
-            watcher.InitWatcher();
-            /*
             Console.Write("Client id     : ");
             string clientId = Console.ReadLine();
             Console.Write("Secret Key    : ");
@@ -26,6 +23,11 @@ namespace Notion2TistoryConsole
             string blogName = Console.ReadLine();
 
             TistoryAPI client = new TistoryAPI(clientId, clientSK, redirect, userID, userPW, blogName);
+            FileWatcher watcher = new FileWatcher(client);
+
+            watcher.InitWatcher();
+            Console.Read();
+            /*
             Content testcontent = new Content("test", "<h1>test!</h1>");
             //client.WritePost(testcontent).Wait();
             */

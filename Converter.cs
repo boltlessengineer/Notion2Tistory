@@ -7,22 +7,24 @@ namespace Notion2TistoryConsole
 {
     class Converter
     {
+        string comment = "Uploaded by Notion2Tistory v1.0";
         public Content GetContent(string c)
         {
             string header = ExtractHeader(c);
-            //Console.WriteLine(header);
 
             string title = GetTitle(header);
 
             Content content = new Content(title);
 
-            Dictionary<string[], string> Table = ReadTable(header);
+            Dictionary<string, string> Table = ReadTable(header);
 
-            content.SetVisbility(GetVisibilityType(header));
-            content.SetCategory(GetCategoryId(header));
-            content.SetTags(GetTags(header));
-            content.SetCommentAccept(GetAcceptComment(header));
-            content.SetPassword(GetPassword(header));
+            content.SetVisbility(GetVisibilityType(Table));
+            content.SetCategory(GetCategoryId(Table));
+            content.SetTags(GetTags(Table));
+            content.SetCommentAccept(GetAcceptComment(Table));
+            content.SetPassword(GetPassword(Table));
+
+            content.SetContent(ChangeHtml(c));
 
             return content;
         }
@@ -38,7 +40,7 @@ namespace Notion2TistoryConsole
             string title = "Notion Page";
             try
             {
-                title = header.Split("<h1 class=\"page-title\">")[1].Split()[0];
+                title = header.Split("<h1 class=\"page-title\">")[1].Split("</h1>")[0];
                 Console.WriteLine("Page title : {0}", title);
             }
             catch
@@ -49,94 +51,199 @@ namespace Notion2TistoryConsole
             return title;
         }
 
-        private int GetVisibilityType(string header)
+        private int GetVisibilityType(Dictionary<string, string> table)
         {
             int type = 0;
             try
             {
-                // 시도
+                try
+                {
+                    string rowValue = table["select" + "Visibility"].Split("\">")[1].Split("</span>")[0];
+                    try
+                    {
+                        if (rowValue == "Private")
+                        {
+                            type = 0;
+                        }
+                        else if (rowValue == "Protect")
+                        {
+                            type = 1;
+                        }
+                        else if (rowValue == "Public")
+                        {
+                            type = 2;
+                        }
+                        else
+                        {
+                            Exception e = new Exception();
+                            throw e;
+                        }
+                        Console.WriteLine("Visbility type : {0}", rowValue);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error : Can't read Visbility type");
+                        Console.WriteLine("Default value is 'false'");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error : Can't find Visbility row");
+                    Console.WriteLine("Default value is 'false'");
+                }
             }
             catch
             {
-                Console.WriteLine("Error : Can't find Visibility row");
-                Console.WriteLine("Default value is 'private'");
+                Console.WriteLine("Error : Can't extract CommentAccept");
+                Console.WriteLine("Default value is 'false'");
             }
             return type;
         }
 
-        private int GetCategoryId(string header)
+        private int GetCategoryId(Dictionary<string, string> table)
         {
             int category = 0;
             try
             {
-                // 시도
+                try
+                {
+                    string rowValue = table["relation" + "Category"];
+                    try
+                    {
+                        // 시도
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error : Can't read Category-id");
+                        Console.WriteLine("Default value is '0'");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error : Can't find Category row");
+                    Console.WriteLine("Default value is '0'");
+                }
             }
             catch
             {
-                Console.WriteLine("Error : Can't find Category-id row");
+                Console.WriteLine("Error : Can't extract Category-id");
                 Console.WriteLine("Default value is '0'");
             }
             return category;
         }
 
-        private List<string> GetTags(string header)
+        private List<string> GetTags(Dictionary<string, string> table)
         {
             List<string> tags = new List<string>();
             try
             {
-                string row = header.Split("Tags</th><td>")[1].Split("</td>")[0];
                 try
                 {
-                    tags = new List<string>(row.Split("</span>"));
-                    tags.Remove("");
-                    tags = tags.Select(tag => tag.Split("\">")[1]).ToList();
-                    Console.WriteLine("Tags : {0}", string.Join(",", tags));
+                    string rowValue = table[ "multi_select" + "Tags" ];
+                    try
+                    {
+                        tags = new List<string>(rowValue.Split("</span>"));
+                        tags.Remove("");
+                        tags = tags.Select(tag => tag.Split("\">")[1]).ToList();
+                        Console.WriteLine("Tags : {0}", string.Join(",", tags));
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error : Can't read tags");
+                    }
                 }
                 catch
                 {
-                    Console.WriteLine("Error : Can't extract Tags");
+                    Console.WriteLine("Error : Can't find Tags row");
                 }
             }
             catch
             {
-                Console.WriteLine("Error : Can't find Tags row");
+                Console.WriteLine("Error : Can't extract tags");
             }
             return tags;
         }
 
-        private bool GetAcceptComment(string header)
+        private bool GetAcceptComment(Dictionary<string, string> table)
         {
             bool accept = false;
             try
             {
-                // 시도
+                try
+                {
+                    string rowValue = table[ "checkbox" + "Comment" ];
+                    try
+                    {
+                        if (rowValue == "<div class=\"checkbox checkbox-on\"></div>")
+                        {
+                            accept = true;
+                        }
+                        else if (rowValue == "<div class=\"checkbox checkbox-off\"></div>")
+                        {
+                            accept = false;
+                        }
+                        else
+                        {
+                            Exception e = new Exception();
+                            throw e;
+                        }
+                        Console.WriteLine("Accept Comment : {0}", accept.ToString());
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error : Can't read CommentAccept");
+                        Console.WriteLine("Default value is 'false'");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error : Can't find Comment row");
+                    Console.WriteLine("Default value is 'false'");
+                }
             }
             catch
             {
-                Console.WriteLine("Error : Can't find Comment row");
+                Console.WriteLine("Error : Can't extract CommentAccept");
                 Console.WriteLine("Default value is 'false'");
             }
             return accept;
         }
 
-        private string GetPassword(string header)
+        private string GetPassword(Dictionary<string, string> table)
         {
             string password = "";
             try
             {
-                // 시도
+                try
+                {
+                    string rowValue = table["text" + "Password"];
+                    try
+                    {
+                        // 시도
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error : Can't read Password");
+                        Console.WriteLine("Default value is ''");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error : Can't find Password row");
+                    Console.WriteLine("Default value is ''");
+                }
             }
             catch
             {
-                Console.WriteLine("Error : Can't find Password row");
+                Console.WriteLine("Error : Can't extract Password");
                 Console.WriteLine("Default value is ''");
             }
             return password;
         }
 
-        private Dictionary<string[], string> ReadTable(string table)
+        private Dictionary<string, string> ReadTable(string table)
         {
-            Dictionary<string[], string> Table = new Dictionary<string[], string>();
+            Dictionary<string, string> Table = new Dictionary<string, string>();
             // type : number, relation, select, multiselect, text, checkbox...
             static string DeleteIcon(string s)
             {
@@ -146,15 +253,6 @@ namespace Notion2TistoryConsole
                     int iconStart = s.IndexOf(icon[0]);
                     int iconEnd = s.IndexOf(icon[1]) + icon[1].Length;
                     s = s.Substring(0, iconStart) + s.Substring(iconEnd, s.Length - iconEnd);
-                }
-                return s;
-            }
-            static string SubByString(string s, string from, string to)
-            {
-                if (s.Contains(from) && s.Contains(to))
-                {
-                    s = s.Substring(s.IndexOf(from) + from.Length);
-                    s = s.Substring(0, s.IndexOf(to));
                 }
                 return s;
             }
@@ -170,11 +268,115 @@ namespace Notion2TistoryConsole
                 name = SubByString(r, "<th>", "</th>");
                 Console.WriteLine("type : {0} | name : {1}", type, name);
                 content = SubByString(r, "<td>", "</td>");
-                Table.Add(new string[]{ type, name }, content);
+                Table.Add(type + name, content);
             }
+            /*
             var lines = Table.Select(kvp => kvp.Key[0] + " & " + kvp.Key[1] + " : " + kvp.Value.ToString());
             Console.WriteLine(string.Join(Environment.NewLine, lines));
+            */
             return Table;
+        }
+
+
+        private string ChangeHtml(string content)
+        {
+            // <body> 태그 안쪽만 남김 (<article> 태그)
+            string changedContent = SubByString(content, "<body>", "</body>");
+
+            // Notion_P CSS 적용
+            changedContent = changedContent.Replace("page sans\">", "Notion_P page sans\">");
+
+            // 빈 블럭
+            changedContent = changedContent.Replace("</p>", "&nbsp;</p>");
+
+            // 토글 전부 접기
+            changedContent = changedContent.Replace("class=\"toggle\"><li><details open=\"\"><summary>", "class=\"toggle\"><li><details><summary>");
+            
+            // 헤더 삭제
+            changedContent = changedContent.Split("<header>")[0] + changedContent.Split("</header>")[1];
+
+            // Embed 형식으로 변환
+            changedContent = MakeEmbed(changedContent);
+
+            // 끝에 주석 추가
+            changedContent += comment;
+
+            return changedContent;
+        }
+        private static string MakeEmbed(string content)
+        {
+            string url;
+            string[] aTag = new string[] {
+                "<div class=\"source\"><a href=\"",
+                "\">",
+                "</a></div></figure>"
+            };
+            string[] emebedaTag = new string[] {
+                "<div class=\"embed_container\"><a href=\"",
+                "\"><iframe src=\"",
+                "\" class=\"embed_inner\"></iframe>"
+            };
+
+            int mark1, mark2, mark3;
+            mark1 = 0;
+
+            while (content.Substring(mark1).Contains(aTag[0]))
+            {
+                mark1 += content.Substring(mark1).IndexOf(aTag[0]) + 29;
+                mark2 = content.Substring(mark1).IndexOf(aTag[1]);
+                mark3 = mark1 + content.Substring(mark1).IndexOf(aTag[2]);
+                url = content.Substring(mark1, mark2);
+                Console.WriteLine("<this is url>");
+                Console.WriteLine(url);
+                url = GetEmbedUrl(url);
+                Console.WriteLine("<this is converted url>");
+                Console.WriteLine(url);
+                content = content.Substring(0, mark1 - 29) + emebedaTag[0] + url + emebedaTag[1]
+                    + url + emebedaTag[2] + content.Substring(mark3);
+            }
+            return content;
+        }
+        private static string GetEmbedUrl(string url)
+        {
+            string website;
+
+            website = SubByString(url, "://", "#");
+            website = SubByString(website , "#", "/");
+
+            if (website == "www.youtube.com")
+            {
+                url = url.Replace("watch?v=", "embed/");
+            }
+            else if (website == "codepen.io")
+            {
+                url = url.Replace("/pen/", "/embed/") + "?theme-id=dark&default-tab=html,result";
+            }
+            else if (website == "whimsical.com")
+            {
+                url = url.Replace(".com/", ".com/embed/");
+            }
+            else if (website == "www.figma.com")
+            {
+                byte[] byteDataParams = UTF8Encoding.UTF8.GetBytes(url);
+                string encodedString = System.Web.HttpUtility.UrlEncode(byteDataParams, 0, byteDataParams.Length);
+                url = "https://www.figma.com/embed?embed_host=share&url=" + encodedString;
+            }
+
+            return url;
+        }
+
+        // 자주 사용하는 함수
+        private static string SubByString(string s, string from, string to)
+        {
+            if (s.Contains(from))
+            {
+                s = s.Substring(s.IndexOf(from) + from.Length);
+            }
+            if (s.Contains(to))
+            {
+                s = s.Substring(0, s.IndexOf(to));
+            }
+            return s;
         }
     }
 }

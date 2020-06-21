@@ -1,21 +1,17 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Web;
+using System.Net;
 
 namespace Notion2TistoryConsole
 {
     class TistoryAPI
     {
-        private const string oauthUrl = "https://www.tistory.com/oauth/authorize";
-        private const string accessUrl = "https://www.tistory.com/oauth/access_token";
-        private const string apiBaseUrl = "https://www.tistory.com/apis/";
+        public const string oauthUrl = "https://www.tistory.com/oauth/authorize";
+        public const string accessUrl = "https://www.tistory.com/oauth/access_token";
 
         public static string clientID;
         public static string clientSK;
@@ -40,6 +36,16 @@ namespace Notion2TistoryConsole
             string accessTokenUrl = $"{accessUrl}?client_id={clientID}&client_secret={clientSK}&redirect_uri={redirect}&code={authCode}&grant_type=authorization_code";
 
             accessToken = GetAccessToken(accessTokenUrl);
+        }
+
+        public string AccessToken()
+        {
+            return accessToken;
+        }
+
+        public string BlogName()
+        {
+            return blogName;
         }
 
         public void ShowClient()
@@ -127,62 +133,6 @@ namespace Notion2TistoryConsole
                 Console.WriteLine("Error. Can't get the Access Token");
                 throw e;
             }
-        }
-        public async Task WritePost(Content content)
-        {
-            var j = Task.Run(() => SendAPIPost("post/write", content.GetPostDict(accessToken)));
-            JObject json = await j;
-            Console.WriteLine(json);
-            Console.WriteLine("Post Url : {0}", json["tistory"]["url"]);
-        }
-
-        public static async Task<JObject> SendAPIPost(string postUrl, IEnumerable<KeyValuePair<string, string>> contentDict)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(apiBaseUrl);
-            Dictionary<string, string> postDict = new Dictionary<string, string>();
-            postDict.Add("access_token", accessToken);
-            postDict.Add("output", "json");
-            postDict.Add("blogName", blogName);
-            IEnumerable<KeyValuePair<string, string>> postParam = postDict.Union(contentDict);
-            var param = new FormUrlEncodedContent(postParam);
-            Console.WriteLine(postDict);
-            var result = await client.PostAsync(postUrl, param);
-            string responseString = await result.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(responseString);
-            if (json["tistory"]["status"].ToString() == "200")
-            {
-                Console.WriteLine("Task Success!");
-            }
-            else
-            {
-                Console.WriteLine("ERROR : Server returned error | status: {0}", json["tistory"]["status"]);
-                Console.WriteLine(json["tistory"]["error_message"]);
-            }
-            return json;
-        }
-
-        private static void ShowPosts(int page)
-        {
-            string result = string.Empty;
-            try
-            {
-                string reqUrl = $"{apiBaseUrl}post/list?access_token={accessToken}&output=json&blogName=boltlessengineer&page={page}";
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(reqUrl);
-                request.Credentials = CredentialCache.DefaultCredentials;
-                Console.WriteLine(reqUrl);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
-                result = readStream.ReadToEnd();
-            }
-            catch
-            {
-                Console.WriteLine("Error. Can't get blog things");
-            }
-            string jsonString = result;
-            Console.WriteLine(jsonString);
-            System.Diagnostics.Debug.WriteLine(jsonString);
         }
 
         private static string Encode(string str)
