@@ -18,17 +18,17 @@ namespace Notion2TistoryConsole
         {
             string clientTxtPath = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_User\info.txt";
             //Console.Write("Client id     : ");
-            string clientId;// = Console.ReadLine();
             //Console.Write("Secret Key    : ");
-            string clientSK; // = Console.ReadLine();
             //Console.Write("Redirect url  : ");
-            string redirect; // = Console.ReadLine();
             //Console.Write("User id       : ");
-            string userID; // = Console.ReadLine();
             //Console.Write("User password : ");
-            string userPW; // = Console.ReadLine();
             //Console.Write("Blog name     : ");
-            string blogName; // = Console.ReadLine();
+            string clientId;
+            string clientSK;
+            string redirect;
+            string userID;
+            string userPW;
+            string blogName;
 
             string readTxt = File.ReadAllText(clientTxtPath);
             clientId = readTxt.Split("|")[0];
@@ -45,7 +45,7 @@ namespace Notion2TistoryConsole
 
             watcher.InitWatcher();
             Console.Read();
-            */
+            * /
             string at = client.AccessToken();
             string result;
             result = RequestHelper.PostMultipart(
@@ -57,7 +57,7 @@ namespace Notion2TistoryConsole
                     {
                         "uploadedfile", new FormFile()
                         {
-                            Name = string.Format("{0}_{1}", "blbd_no", "pstg_no"),
+                            Name = "testimage",
                             ContentType = "image/png",
                             FilePath = @"C:\Users\seong\Documents\ShareX\Screenshots\2020-06\VsDebugConsole_wtUybwvfqj.png"
                         }
@@ -77,82 +77,11 @@ namespace Notion2TistoryConsole
             Console.WriteLine("===========================================================");
             Console.WriteLine("Image Replacer : {0}", imageReplacer);
             Console.WriteLine("===========================================================");
-        }
-
-        // https://spirit32.tistory.com/21
-        public class FormFile
-        {
-            public string Name { get; set; }
-            public string ContentType { get; set; }
-            public string FilePath { get; set; }
-            public Stream Stream { get; set; }
-        }
-
-        public class RequestHelper
-        {
-            public static string PostMultipart(string url, Dictionary<string, object> parameters)
-            {
-
-                string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-                byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.ContentType = "multipart/form-data; boundary=" + boundary;
-                request.Method = "POST";
-                request.KeepAlive = true;
-                request.Credentials = CredentialCache.DefaultCredentials;
-
-                if (parameters != null && parameters.Count > 0)
-                {
-                    using (Stream requestStream = request.GetRequestStream())
-                    {
-                        foreach (KeyValuePair<string, object> pair in parameters)
-                        {
-                            requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
-                            if (pair.Value is FormFile)
-                            {
-                                FormFile file = pair.Value as FormFile;
-                                string header = "Content-Disposition: form-data; name=\"" + pair.Key + "\"; filename=\"" + file.Name + "\"\r\nContent-Type: " + file.ContentType + "\r\n\r\n";
-                                byte[] bytes = Encoding.UTF8.GetBytes(header);
-                                requestStream.Write(bytes, 0, bytes.Length);
-                                byte[] buffer = new byte[32768];
-                                int bytesRead;
-                                if (file.Stream == null)
-                                {
-                                    // upload from file
-                                    using (FileStream fileStream = File.OpenRead(file.FilePath))
-                                    {
-                                        while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
-                                            requestStream.Write(buffer, 0, bytesRead);
-                                        fileStream.Close();
-                                    }
-                                }
-                                else
-                                {
-                                    // upload from given stream
-                                    while ((bytesRead = file.Stream.Read(buffer, 0, buffer.Length)) != 0)
-                                        requestStream.Write(buffer, 0, bytesRead);
-                                }
-                            }
-                            else
-                            {
-                                string data = "Content-Disposition: form-data; name=\"" + pair.Key + "\"\r\n\r\n" + pair.Value;
-                                byte[] bytes = Encoding.UTF8.GetBytes(data);
-                                requestStream.Write(bytes, 0, bytes.Length);
-                            }
-                        }
-                        byte[] trailer = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
-                        requestStream.Write(trailer, 0, trailer.Length);
-                        requestStream.Close();
-                    }
-                }
-                using (WebResponse response = request.GetResponse())
-                {
-                    using (Stream responseStream = response.GetResponseStream())
-                    using (StreamReader reader = new StreamReader(responseStream))
-                        return reader.ReadToEnd();
-                }
-            }
+            */
+            string example = "<figure id=\"a3b39743-5dc4-4723-a2b0-c9c96f492b66\" class=\"image\"><a href=\"Notion%20to%20Tistory%2026%20C%20a3b397435dc44723a2b0c9c96f492b66/Untitled.png\"><img style=\"width:1468px\" src=\"Notion%20to%20Tistory%2026%20C%20a3b397435dc44723a2b0c9c96f492b66/Untitled.png\"/></a><figcaption>일단 테스트를 위해 Program.cs 파일의 Main class 안에서 돌리고 있다.</figcaption></figure><p id=\"111117df-2717-4f34-9014-a301497a4395\" class=\"\">그리고 성공했다!</p>";
+            List<Converter.ReplaceImage.NotionImage> n = Converter.ReplaceImage.FindImageTag("Notion to Tistory 26 C a3b397435dc44723a2b0c9c96f492b66", example);
+            example = Converter.ReplaceImage.ChangeImageTag(example, n);
+            Console.WriteLine(example);
         }
     }
 }

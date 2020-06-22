@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Web;
 
 namespace Notion2TistoryConsole
 {
@@ -365,31 +367,88 @@ namespace Notion2TistoryConsole
 
         public class ReplaceImage
         {
-            public static string ChangeImageTag(string content, string[] imageList)
+            public static List<NotionImage> FindImageTag(string folderName, string content)
             {
-                foreach(string image in imageList)
+                List<NotionImage> imageList = new List<NotionImage>();
+                int mark1 = 0;
+                folderName = Uri.EscapeUriString(folderName);
+                Console.WriteLine(folderName);
+                while (content.Substring(mark1).Contains(" class=\"image\"><a href=\"" + folderName))
                 {
-                    if (content.Contains(image))
+                    try
+                    {
+                        Console.WriteLine(mark1);
+                        NotionImage image = new NotionImage();
+                        mark1 += content.Substring(mark1).IndexOf(" class=\"image\"><a href=\"") + 24; // + 24
+                        int tagStart = content.Substring(0, mark1 - 24).LastIndexOf("<figure id=\"");
+                        int tagLength = content.IndexOf("</figure>") + 9 - tagStart;
+                        string tag = content.Substring(tagStart, tagLength); // <figure><a><img></img></a></figure>
+                        string path = SubByString(tag, "<a href=\"", "\"><img");
+                        string style = SubByString(tag, "<img style=\"", "\" src=\"");
+
+                        image.tag = tag;
+                        image.url = path;
+                        image.style = style;
+
+                        if (tag.Contains("<figcaption>"))
+                        {
+                            string caption = SubByString(tag, "<figcaption>", "</figcaption>");
+                            image.caption = caption;
+                        }
+                        imageList.Add(image);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Can't get local image file info");
+                    }
+                }
+                return imageList;
+            }
+
+            public static string ChangeImageTag(string content, List<NotionImage> imageList)
+            {
+                Console.WriteLine(imageList.Count);
+                foreach(NotionImage image in imageList)
+                {
+                    if (content.Contains(image.tag))
                     {
                         string replacer = string.Empty;
                         try
                         {
-                            //replacer = UploadImage(image, client);
+                            // replacer = UploadImage(image, client);
+                            replacer = client.UploadImage(new TistoryAPI.FormFile() {
+                                Name = "testimage",
+                                ContentType = "image/png",
+                                FilePath =image.url
+                            });
                             // 이걸 위해 API client 관련 싹 리팩토링. Converter 정도면 client 받아와도 되겠다
                         }
                         catch
                         {
                             Console.WriteLine("Can't upload image : {0}", image);
                         }
+                        string replaceTag = image.InsertReplacer("[##_에베베벱_##]");
+                        content = content.Replace(image.tag, replaceTag);
+                        // 이미지 style 값, width:XXXXpx 값 받아서 div 박스 만들고 그 안에 치환자. <figure class="image"> 태그는 그대로 남기기
                     }
                 }
                 return content;
             }
-            private static string UploadImage(string imagePath, TistoryAPI client)//imagePath 대신 TistoryAPI.FormFile
+            
+            public class NotionImage
             {
-                string replacer = string.Empty;
+                public string tag = "";
+                public string url = "";
+                public string style = "";
+                public string caption = "";
 
-                return replacer;
+                public string InsertReplacer(string inner)
+                {
+                    int temp = tag.IndexOf("><a href=\"") + 1;
+                    inner = inner.Replace("|||_##]", String.Format("|{0}||_##]", caption));
+                    string replaced = tag.Substring(0, temp) + inner + tag.Substring(tag.IndexOf("</figure>"));
+                    return replaced;
+                }
             }
         }
 

@@ -141,7 +141,7 @@ namespace Notion2TistoryConsole
             }
         }
 
-        private static string Encode(string str)
+        public static string Encode(string str)
         {
             byte[] byteDataParams = UTF8Encoding.UTF8.GetBytes(str);
             string encodedParams = HttpUtility.UrlEncode(byteDataParams, 0, byteDataParams.Length);
@@ -165,6 +165,113 @@ namespace Notion2TistoryConsole
                 Console.WriteLine(json["tistory"]["error_message"]);
             }
             return json;
+        }
+
+
+        public static string UploadImage(FormFile file)
+        {
+            string result;
+            result = RequestHelper.PostMultipart(
+                "https://www.tistory.com/apis/post/attach",
+                new Dictionary<string, object>() {
+                    { "access_token", accessToken },
+                    { "output", "json" },
+                    { "blogName", blogName },
+                    {
+                        "uploadedfile", file
+                    }
+                }
+            );
+            JObject json = JObject.Parse(result);
+            Console.WriteLine(json);
+            string replacer = json["tistory"]["replacer"].ToString();
+            string url = json["tistory"]["url"].ToString();
+
+            string imageId = url.Substring(url.IndexOf("image/") + 6, url.Length - url.IndexOf("image/") - 10);
+            string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|||_##]";
+            Console.WriteLine("===========================================================");
+            Console.WriteLine("Replacer : {0}", replacer);
+            Console.WriteLine("Url      : {0}", url);
+            Console.WriteLine("===========================================================");
+            Console.WriteLine("Image Replacer : {0}", imageReplacer);
+            Console.WriteLine("===========================================================");
+            return imageReplacer;
+        }
+
+        // https://spirit32.tistory.com/21
+        public class FormFile
+        {
+            public string Name { get; set; }
+            public string ContentType { get; set; }
+            public string FilePath { get; set; }
+            public Stream Stream { get; set; }
+        }
+
+        public class RequestHelper
+        {
+            public static string PostMultipart(string url, Dictionary<string, object> parameters)
+            {
+
+                string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
+                byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.ContentType = "multipart/form-data; boundary=" + boundary;
+                request.Method = "POST";
+                request.KeepAlive = true;
+                request.Credentials = CredentialCache.DefaultCredentials;
+
+                if (parameters != null && parameters.Count > 0)
+                {
+                    using (Stream requestStream = request.GetRequestStream())
+                    {
+                        foreach (KeyValuePair<string, object> pair in parameters)
+                        {
+                            requestStream.Write(boundaryBytes, 0, boundaryBytes.Length);
+                            if (pair.Value is FormFile)
+                            {
+                                FormFile file = pair.Value as FormFile;
+                                string header = "Content-Disposition: form-data; name=\"" + pair.Key + "\"; filename=\"" + file.Name + "\"\r\nContent-Type: " + file.ContentType + "\r\n\r\n";
+                                byte[] bytes = Encoding.UTF8.GetBytes(header);
+                                requestStream.Write(bytes, 0, bytes.Length);
+                                byte[] buffer = new byte[32768];
+                                int bytesRead;
+                                if (file.Stream == null)
+                                {
+                                    // upload from file
+                                    using (FileStream fileStream = File.OpenRead(file.FilePath))
+                                    {
+                                        while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
+                                            requestStream.Write(buffer, 0, bytesRead);
+                                        fileStream.Close();
+                                    }
+                                }
+                                else
+                                {
+                                    // upload from given stream
+                                    while ((bytesRead = file.Stream.Read(buffer, 0, buffer.Length)) != 0)
+                                        requestStream.Write(buffer, 0, bytesRead);
+                                }
+                            }
+                            else
+                            {
+                                string data = "Content-Disposition: form-data; name=\"" + pair.Key + "\"\r\n\r\n" + pair.Value;
+                                byte[] bytes = Encoding.UTF8.GetBytes(data);
+                                requestStream.Write(bytes, 0, bytes.Length);
+                            }
+                        }
+                        byte[] trailer = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                        requestStream.Write(trailer, 0, trailer.Length);
+                        requestStream.Close();
+                    }
+                }
+                using (WebResponse response = request.GetResponse())
+                {
+                    using (Stream responseStream = response.GetResponseStream())
+                    using (StreamReader reader = new StreamReader(responseStream))
+                        return reader.ReadToEnd();
+                }
+            }
         }
     }
 }
