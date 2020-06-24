@@ -13,3 +13,9 @@ C:\Users\seong\OneDrive\Documents\Projects\Notion2TistoryConsole\obj\Debug\netco
 C:\Users\seong\OneDrive\Documents\Projects\Notion2TistoryConsole\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 C:\Users\seong\OneDrive\Documents\Projects\Notion2TistoryConsole\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.csproj.CoreCompileInputs.cache
 C:\Users\seong\OneDrive\Documents\Projects\Notion2TistoryConsole\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.csproj.CopyComplete
+C:\Users\seong\Source\Repos\seongmin8452\Notion2Tistory\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.csprojAssemblyReference.cache
+C:\Users\seong\Source\Repos\seongmin8452\Notion2Tistory\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.AssemblyInfoInputs.cache
+C:\Users\seong\Source\Repos\seongmin8452\Notion2Tistory\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.AssemblyInfo.cs
+C:\Users\seong\Source\Repos\seongmin8452\Notion2Tistory\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.csproj.CoreCompileInputs.cache
+C:\Users\seong\Source\Repos\seongmin8452\Notion2Tistory\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.dll
+C:\Users\seong\Source\Repos\seongmin8452\Notion2Tistory\obj\Debug\netcoreapp3.1\Notion2TistoryConsole.pdb

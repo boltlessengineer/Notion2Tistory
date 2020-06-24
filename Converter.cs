@@ -405,7 +405,7 @@ namespace Notion2TistoryConsole
                 return imageList;
             }
 
-            public static string ChangeImageTag(string content, List<NotionImage> imageList)
+            public static string ChangeImageTag(string content, List<NotionImage> imageList, TistoryAPI client)
             {
                 Console.WriteLine(imageList.Count);
                 foreach(NotionImage image in imageList)
