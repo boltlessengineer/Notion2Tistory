@@ -273,5 +273,70 @@ namespace Notion2TistoryConsole
                 }
             }
         }
+        public List<AttachedImage> UploadImages(List<AttachedImage> list)
+        {
+            foreach(AttachedImage image in list)
+            {
+                Console.WriteLine("Uploading {0}", image.originalPath);
+
+                FormFile file = new FormFile()
+                {
+                    Name = image.originalPath.Replace("/", ""), // 여기 이름 매번 다르게 수정!
+                    ContentType = "image/png",
+                    FilePath = image.originalPath
+                };
+
+                string result = RequestHelper.PostMultipart(
+                    "https://www.tistory.com/apis/post/attach",
+                    new Dictionary<string, object>() {
+                        { "access_token", accessToken },
+                        { "output", "json" },
+                        { "blogName", blogName },
+                        {
+                            "uploadedfile", file
+                        }
+                    }
+                );
+
+                JObject json = JObject.Parse(result);
+                Console.WriteLine(json);
+                string replacer = json["tistory"]["replacer"].ToString();
+                string url = json["tistory"]["url"].ToString();
+                
+                string imageId = url.Substring(url.IndexOf("image/") + 6, url.Length - url.IndexOf("image/") - 10);
+                string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|" + image.originalCaption + "||_##]";
+                Console.WriteLine("===========================================================");
+                Console.WriteLine("Replacer : {0}", replacer);
+                Console.WriteLine("Url      : {0}", url);
+                Console.WriteLine("===========================================================");
+                Console.WriteLine("Image Replacer : {0}", imageReplacer);
+                Console.WriteLine("===========================================================");
+
+                image.replacer = imageReplacer;
+            }
+
+            return list;
+        }
+
+        public static void UploadPost(Content content)
+        {
+            Dictionary<string, object> postDict = new Dictionary<string, object>();
+            postDict.Add("access_token", accessToken);
+            postDict.Add("output", "json");
+            postDict.Add("blogName", blogName);
+            postDict.Add("title", content.title);
+            postDict.Add("content", content.content);
+            postDict.Add("visibility", content.visibility.ToString());
+            postDict.Add("categoryId", content.categoryId.ToString());
+            // postDict.Add("published", published);
+            // postDict.Add("slogan", slogan);
+            postDict.Add("tag", string.Join(",", content.tags));
+            postDict.Add("acceptComent", content.acceptComent ? "1" : "0");
+            postDict.Add("tagpassword", content.password);
+
+            string result = RequestHelper.PostMultipart("https://www.tistory.com/apis/post/write", postDict);
+            JObject json = JObject.Parse(result);
+            Console.WriteLine(json);
+        }
     }
 }

@@ -21,6 +21,8 @@ namespace Notion2TistoryConsole
         public List<string> tags; // 태그 (POST 요청은 ","로 구분)
         public bool acceptComent; // 댓글 허용 (POST 요청은 0, 1)
         public string password; // 보호글 비밀번호
+        public List<AttachedFile> attachedFiles;
+        public List<AttachedImage> images;
 
         public Content(string t, string c = "empty page")
         {
@@ -32,6 +34,8 @@ namespace Notion2TistoryConsole
             tags = new List<string>();
             acceptComent = true;
             password = "";
+            attachedFiles = new List<AttachedFile>();
+            images = new List<AttachedImage>();
         }
 
         public void SetContent(string c)
@@ -62,6 +66,10 @@ namespace Notion2TistoryConsole
         public void SetPassword(string pw = "")
         {
             password = pw;
+        }
+        public void SetImages(List<AttachedImage> list)
+        {
+            images = list;
         }
 
         public Dictionary<string, string> GetPostDict(string token, string blogName)

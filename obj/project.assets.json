@@ -59,11 +59,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\seong\\Source\\Repos\\seongmin8452\\Notion2Tistory\\Notion2TistoryConsole.csproj",
+      "projectUniqueName": "C:\\Users\\seong\\OneDrive\\Documents\\Projects\\Notion2TistoryConsole\\Notion2TistoryConsole.csproj",
       "projectName": "Notion2TistoryConsole",
-      "projectPath": "C:\\Users\\seong\\Source\\Repos\\seongmin8452\\Notion2Tistory\\Notion2TistoryConsole.csproj",
+      "projectPath": "C:\\Users\\seong\\OneDrive\\Documents\\Projects\\Notion2TistoryConsole\\Notion2TistoryConsole.csproj",
       "packagesPath": "C:\\Users\\seong\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\seong\\Source\\Repos\\seongmin8452\\Notion2Tistory\\obj\\",
+      "outputPath": "C:\\Users\\seong\\OneDrive\\Documents\\Projects\\Notion2TistoryConsole\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
