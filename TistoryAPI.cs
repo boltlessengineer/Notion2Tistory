@@ -239,6 +239,7 @@ namespace Notion2TistoryConsole
                                 if (file.Stream == null)
                                 {
                                     // upload from file
+                                    Console.WriteLine("Uploading...");
                                     using (FileStream fileStream = File.OpenRead(file.FilePath))
                                     {
                                         while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
@@ -281,10 +282,20 @@ namespace Notion2TistoryConsole
 
                 FormFile file = new FormFile()
                 {
-                    Name = image.originalPath.Replace("/", ""), // 여기 이름 매번 다르게 수정!
+                    Name = Uri.EscapeUriString(image.originalPath),
                     ContentType = "image/png",
                     FilePath = image.originalPath
                 };
+
+                FileInfo fileInfo = new FileInfo(file.FilePath);
+                if (fileInfo.Exists)
+                {
+                    Console.WriteLine("exist");
+                }
+                else
+                {
+                    Console.WriteLine("NOP");
+                }
 
                 string result = RequestHelper.PostMultipart(
                     "https://www.tistory.com/apis/post/attach",
@@ -313,6 +324,8 @@ namespace Notion2TistoryConsole
                 Console.WriteLine("===========================================================");
 
                 image.replacer = imageReplacer;
+
+                Delay(2000);
             }
 
             return list;
@@ -337,6 +350,20 @@ namespace Notion2TistoryConsole
             string result = RequestHelper.PostMultipart("https://www.tistory.com/apis/post/write", postDict);
             JObject json = JObject.Parse(result);
             Console.WriteLine(json);
+        }
+
+        private static DateTime Delay(int MS)
+        {
+            DateTime ThisMoment = DateTime.Now;
+            TimeSpan duration = new TimeSpan(0, 0, 0, 0, MS);
+            DateTime AfterWards = ThisMoment.Add(duration);
+
+            while (AfterWards >= ThisMoment)
+            {
+                ThisMoment = DateTime.Now;
+            }
+
+            return DateTime.Now;
         }
     }
 }

@@ -39,6 +39,7 @@ namespace Notion2TistoryConsole
 
             void EventHandler (string tmpPath)
             {
+                Delay(2000);
                 // 여기에 apiClient, Converter등을 이용한 코드 입력
                 DirectoryInfo tmpDir = new DirectoryInfo(tmpPath);
                 foreach (FileInfo file in tmpDir.GetFiles())
@@ -87,6 +88,20 @@ namespace Notion2TistoryConsole
             example = Converter.ReplaceImage.ChangeImageTag(example, n, client);
             Console.WriteLine(example);
             */
+        }
+
+        private static DateTime Delay(int MS)
+        {
+            DateTime ThisMoment = DateTime.Now;
+            TimeSpan duration = new TimeSpan(0, 0, 0, 0, MS);
+            DateTime AfterWards = ThisMoment.Add(duration);
+
+            while (AfterWards >= ThisMoment)
+            {
+                ThisMoment = DateTime.Now;
+            }
+
+            return DateTime.Now;
         }
     }
 }

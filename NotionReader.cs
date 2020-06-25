@@ -291,7 +291,7 @@ namespace Notion2TistoryConsole
             List<AttachedImage> imageList = new List<AttachedImage>();
             int mark1 = 0;
             //string folderName = Uri.EscapeUriString(folderName);
-            while (content.Substring(mark1).Contains(" class=\"image\"><a href=\""))// + folderName
+            while (content.Substring(mark1).Contains(" class=\"image\"><a href=\""))// + Uri.EscapeUriString(folderName)
             {
                 Console.WriteLine(mark1);
                 AttachedImage image = new AttachedImage();
