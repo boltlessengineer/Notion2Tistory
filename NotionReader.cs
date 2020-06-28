@@ -313,6 +313,24 @@ namespace Notion2TistoryConsole
                 }
                 imageList.Add(image);
             }
+            /*
+            AttachedImage image = new AttachedImage();
+            image.originalTag = "<><>";
+            imageList.Add(new AttachedImage() {
+                 originalTag = "<p",
+                 originalPath = @"C:\Users\seong\OneDrive\Documents\Personal\덕질\1591830502551175758872945066488.png"
+            });
+            imageList.Add(new AttachedImage()
+            {
+                originalTag = "</p>",
+                originalPath = @"C:\Users\seong\Documents\ShareX\Screenshots\2020-06\chrome_ZiZr1XP1cT.png"
+            });
+            imageList.Add(new AttachedImage()
+            {
+                originalTag = "</p>",
+                originalPath = @"C:\Users\seong\Documents\ShareX\Screenshots\2020-06\chrome_OIPaurOXSY.png"
+            });
+            */
             return imageList;
         }
 

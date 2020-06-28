@@ -86,7 +86,7 @@ namespace Notion2TistoryConsole
             // dict.Add("slogan", slogan);
             dict.Add("tag", string.Join(",", tags));
             dict.Add("acceptComent", acceptComent ? "1" : "0" );
-            dict.Add("tagpassword", password);
+            dict.Add("password", password);
             return dict;
         }
 

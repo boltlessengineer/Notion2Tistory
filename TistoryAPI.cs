@@ -273,6 +273,46 @@ namespace Notion2TistoryConsole
                         return reader.ReadToEnd();
                 }
             }
+
+            public static string PostApplication(string url, Dictionary<string, object> parameters)
+            {
+                WebRequest request = WebRequest.Create(url);
+                request.Method = "POST";
+
+                StringBuilder builder = new StringBuilder();
+
+                foreach(KeyValuePair<string, object> kvp in parameters)
+                {
+                    builder.Append(kvp.Key + "=" + kvp.Value + "&");
+                }
+
+                string postData = builder.ToString();
+                Console.WriteLine(postData);
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+                request.ContentType = "text/html; charset=utf-8";
+                request.ContentLength = byteArray.Length;
+
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                dataStream.Close();
+
+                WebResponse response = request.GetResponse();
+                Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+
+                string responseFromServer;
+                using (dataStream = response.GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(dataStream);
+                    responseFromServer = reader.ReadToEnd();
+                    Console.WriteLine(responseFromServer);
+
+                }
+
+                // Close the response.
+                response.Close();
+                return responseFromServer;
+            }
         }
         public List<AttachedImage> UploadImages(List<AttachedImage> list)
         {
@@ -315,7 +355,7 @@ namespace Notion2TistoryConsole
                 string url = json["tistory"]["url"].ToString();
                 
                 string imageId = url.Substring(url.IndexOf("image/") + 6, url.Length - url.IndexOf("image/") - 10);
-                string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|" + image.originalCaption + "||_##]";
+                string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-origin-width=&quot;0&quot; data-origin-height=&quot;0&quot; data-ke-mobilestyle=&quot;widthContent&quot;|" + image.originalCaption + "||_##]";
                 Console.WriteLine("===========================================================");
                 Console.WriteLine("Replacer : {0}", replacer);
                 Console.WriteLine("Url      : {0}", url);
@@ -331,7 +371,7 @@ namespace Notion2TistoryConsole
             return list;
         }
 
-        public static void UploadPost(Content content)
+        public void UploadPost(Content content)
         {
             Dictionary<string, object> postDict = new Dictionary<string, object>();
             postDict.Add("access_token", accessToken);
@@ -345,9 +385,30 @@ namespace Notion2TistoryConsole
             // postDict.Add("slogan", slogan);
             postDict.Add("tag", string.Join(",", content.tags));
             postDict.Add("acceptComent", content.acceptComent ? "1" : "0");
-            postDict.Add("tagpassword", content.password);
+            postDict.Add("password", content.password);
 
             string result = RequestHelper.PostMultipart("https://www.tistory.com/apis/post/write", postDict);
+            JObject json = JObject.Parse(result);
+            Console.WriteLine(json);
+        }
+
+        public static void UploadPost2(Content content)
+        {
+            Dictionary<string, object> postDict = new Dictionary<string, object>();
+            postDict.Add("access_token", accessToken);
+            postDict.Add("output", "json");
+            postDict.Add("blogName", blogName);
+            postDict.Add("title", content.title);
+            postDict.Add("content", content.content);
+            postDict.Add("visibility", content.visibility.ToString());
+            postDict.Add("categoryId", content.categoryId.ToString());
+            // postDict.Add("published", published);
+            // postDict.Add("slogan", slogan);
+            postDict.Add("tag", string.Join(",", content.tags));
+            postDict.Add("acceptComent", content.acceptComent ? "1" : "0");
+            postDict.Add("password", content.password);
+
+            string result = RequestHelper.PostApplication("https://www.tistory.com/apis/post/write", postDict);
             JObject json = JObject.Parse(result);
             Console.WriteLine(json);
         }

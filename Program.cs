@@ -33,13 +33,13 @@ namespace Notion2TistoryConsole
             userID = readTxt.Split("|")[3];
             userPW = readTxt.Split("|")[4];
             blogName = readTxt.Split("|")[5];
-            //Console.WriteLine("{0}\n{1}\n{2}\n{3}\n{4}\n{5}", clientId, clientSK, redirect, userID, userPW, blogName);
+            Console.WriteLine("{0}\n{1}\n{2}\n{3}\n{4}\n{5}", clientId, clientSK, redirect, userID, userPW, blogName);
 
             TistoryAPI client = new TistoryAPI(clientId, clientSK, redirect, userID, userPW, blogName);
 
             void EventHandler (string tmpPath)
             {
-                Delay(2000);
+                // Delay(2000);
                 // 여기에 apiClient, Converter등을 이용한 코드 입력
                 DirectoryInfo tmpDir = new DirectoryInfo(tmpPath);
                 foreach (FileInfo file in tmpDir.GetFiles())
@@ -65,8 +65,22 @@ namespace Notion2TistoryConsole
                         }
                         content.images = client.UploadImages(content.images);
                         content = Converter.ChangeHtml(content);
+                        /*
+                        content.content =
+                        "<h1>이미지1</h1>[##_Image|t/cfile@99729C4A5EF7641D19|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|일단 테스트를 위해 Program.cs 파일의 Main class 안에서 돌리고 있다.||_##]"
+                        + "<h1>이미지2</h1>[##_Image|t/cfile@995098455EF764222C|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|||_##]"
+                        + "<h1>이미지3</h1>[##_Image|t/cfile@997E123D5EF7642518|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|오늘도 가독성을 위해 열일하는 200% 확대||_##]"
+                        + "<h1>이미지4</h1>[##_Image|t/cfile@99BF9E505EF764271E|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|||_##]";
+                        */
                         Console.WriteLine(content.content);
-                        TistoryAPI.UploadPost(content);
+                        Console.WriteLine(">{0}<", TistoryAPI.accessToken);
+                        //while (Console.ReadKey().Key != ConsoleKey.A) ;
+                        client.UploadPost(content);
+                        //TistoryAPI.UploadPost2(content);
+                        //ㅅ 이게 문제였음... multipart-form data 방식 말고 원래 하던 그거로 해보자.
+                        //아니면 같은 방식으로 하되, 작동하는 치환자를 미리 넣어놓고 해보자.
+                        //[*] 작동하는 치환자를 업로드했을 때, 치환자가 계속 작동하는지 확인
+                        //[X] multipart-form data 방식 말고 다른 방식으로 업로드 했을 때 확인
                     }
                 }
                 try
