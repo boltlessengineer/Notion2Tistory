@@ -315,6 +315,7 @@ namespace Notion2TistoryConsole
                     image.originalCaption = caption;
                 }
                 imageList.Add(image);
+                break;
             }
             return imageList;
         }
