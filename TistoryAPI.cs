@@ -355,7 +355,7 @@ namespace Notion2TistoryConsole
                 string url = json["tistory"]["url"].ToString();
                 
                 string imageId = url.Substring(url.IndexOf("image/") + 6, url.Length - url.IndexOf("image/") - 10);
-                string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-origin-width=&quot;0&quot; data-origin-height=&quot;0&quot; data-ke-mobilestyle=&quot;widthContent&quot;|" + image.originalCaption + "||_##]";
+                string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-filename=\"thumbnail.png\" data-origin-width=&quot;0&quot; data-origin-height=&quot;0&quot; data-ke-mobilestyle=&quot;widthContent&quot;|" + image.originalCaption + "||_##]";
                 Console.WriteLine("===========================================================");
                 Console.WriteLine("Replacer : {0}", replacer);
                 Console.WriteLine("Url      : {0}", url);

@@ -286,12 +286,15 @@ namespace Notion2TistoryConsole
             return Table;
         }
 
-        public static List<AttachedImage> GetImageList(string content, string folderName)
+        public static List<AttachedImage> GetImageList(string content, string folderPath)
         {
             List<AttachedImage> imageList = new List<AttachedImage>();
             int mark1 = 0;
-            //string folderName = Uri.EscapeUriString(folderName);
-            while (content.Substring(mark1).Contains(" class=\"image\"><a href=\""))// + Uri.EscapeUriString(folderName)
+            string folderName = Uri.EscapeDataString(folderPath.Split(@"\")[^1]);
+            string tmpPath = String.Join(@"\", folderPath.Split(@"\").SkipLast(1));
+            Console.WriteLine(">{0}<", folderName);
+            Console.WriteLine(">{0}<", folderPath);
+            while (content.Substring(mark1).Contains(" class=\"image\"><a href=\"" + folderName))
             {
                 Console.WriteLine(mark1);
                 AttachedImage image = new AttachedImage();
@@ -303,7 +306,7 @@ namespace Notion2TistoryConsole
                 string style = SubByString(tag, "<img style=\"", "\" src=\"");
 
                 image.originalTag = tag; // <figure><a><img></img></a></figure>
-                image.originalPath = folderName + @"\" + Uri.UnescapeDataString(path);
+                image.originalPath = tmpPath + @"\" + Uri.UnescapeDataString(path);
                 image.originalStyle = style;
 
                 if (tag.Contains("<figcaption>"))
@@ -313,24 +316,6 @@ namespace Notion2TistoryConsole
                 }
                 imageList.Add(image);
             }
-            /*
-            AttachedImage image = new AttachedImage();
-            image.originalTag = "<><>";
-            imageList.Add(new AttachedImage() {
-                 originalTag = "<p",
-                 originalPath = @"C:\Users\seong\OneDrive\Documents\Personal\덕질\1591830502551175758872945066488.png"
-            });
-            imageList.Add(new AttachedImage()
-            {
-                originalTag = "</p>",
-                originalPath = @"C:\Users\seong\Documents\ShareX\Screenshots\2020-06\chrome_ZiZr1XP1cT.png"
-            });
-            imageList.Add(new AttachedImage()
-            {
-                originalTag = "</p>",
-                originalPath = @"C:\Users\seong\Documents\ShareX\Screenshots\2020-06\chrome_OIPaurOXSY.png"
-            });
-            */
             return imageList;
         }
 
