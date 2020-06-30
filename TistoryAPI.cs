@@ -137,6 +137,7 @@ namespace Notion2TistoryConsole
             catch (Exception e)
             {
                 Console.WriteLine("Error. Can't get the Access Token");
+                Console.WriteLine(e);
                 throw e;
             }
         }
@@ -146,56 +147,6 @@ namespace Notion2TistoryConsole
             byte[] byteDataParams = UTF8Encoding.UTF8.GetBytes(str);
             string encodedParams = HttpUtility.UrlEncode(byteDataParams, 0, byteDataParams.Length);
             return encodedParams;
-        }
-
-        public static async Task<JObject> SendAPIPost(string postUrl, HttpContent content)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(apiBaseUrl);
-            var result = await client.PostAsync(postUrl, content);
-            string responseString = await result.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(responseString);
-            if (json["tistory"]["status"].ToString() == "200")
-            {
-                Console.WriteLine("Task Success!");
-            }
-            else
-            {
-                Console.WriteLine("ERROR : Server returned error | status: {0}", json["tistory"]["status"]);
-                Console.WriteLine(json["tistory"]["error_message"]);
-            }
-            return json;
-        }
-
-
-        public static string UploadImage(FormFile file)
-        {
-            string result;
-            result = RequestHelper.PostMultipart(
-                "https://www.tistory.com/apis/post/attach",
-                new Dictionary<string, object>() {
-                    { "access_token", accessToken },
-                    { "output", "json" },
-                    { "blogName", blogName },
-                    {
-                        "uploadedfile", file
-                    }
-                }
-            );
-            JObject json = JObject.Parse(result);
-            Console.WriteLine(json);
-            string replacer = json["tistory"]["replacer"].ToString();
-            string url = json["tistory"]["url"].ToString();
-
-            string imageId = url.Substring(url.IndexOf("image/") + 6, url.Length - url.IndexOf("image/") - 10);
-            string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-origin-width=\"0\" data-origin-height=\"0\" data-ke-mobilestyle=\"widthContent\"|||_##]";
-            Console.WriteLine("===========================================================");
-            Console.WriteLine("Replacer : {0}", replacer);
-            Console.WriteLine("Url      : {0}", url);
-            Console.WriteLine("===========================================================");
-            Console.WriteLine("Image Replacer : {0}", imageReplacer);
-            Console.WriteLine("===========================================================");
-            return imageReplacer;
         }
 
         // https://spirit32.tistory.com/21
@@ -273,47 +224,65 @@ namespace Notion2TistoryConsole
                         return reader.ReadToEnd();
                 }
             }
-
-            public static string PostApplication(string url, Dictionary<string, object> parameters)
+            
+            public static string GetRequest(string url, Dictionary<string, object> parameters)
             {
-                WebRequest request = WebRequest.Create(url);
-                request.Method = "POST";
-
-                StringBuilder builder = new StringBuilder();
-
-                foreach(KeyValuePair<string, object> kvp in parameters)
+                string stringParameters = "?";
+                foreach(KeyValuePair<string, object> kv in parameters)
                 {
-                    builder.Append(kvp.Key + "=" + kvp.Value + "&");
+                    stringParameters += kv.Key + "=" + kv.Value + "&";
                 }
+                stringParameters = stringParameters.TrimEnd('&');
 
-                string postData = builder.ToString();
-                Console.WriteLine(postData);
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-                request.ContentType = "text/html; charset=utf-8";
-                request.ContentLength = byteArray.Length;
-
-                Stream dataStream = request.GetRequestStream();
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                dataStream.Close();
-
-                WebResponse response = request.GetResponse();
-                Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-                string responseFromServer;
-                using (dataStream = response.GetResponseStream())
+                string requestUrl = url + stringParameters;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUrl);
+                request.Credentials = CredentialCache.DefaultCredentials;
+                using (WebResponse response = request.GetResponse())
                 {
-                    StreamReader reader = new StreamReader(dataStream);
-                    responseFromServer = reader.ReadToEnd();
-                    Console.WriteLine(responseFromServer);
-
+                    using (Stream responseStream = response.GetResponseStream())
+                    using (StreamReader reader = new StreamReader(responseStream))
+                        return reader.ReadToEnd();
                 }
-
-                // Close the response.
-                response.Close();
-                return responseFromServer;
             }
         }
+
+        public class Category
+        {
+            public string id { get; set; }
+            public string name { get; set; }
+            public string parent { get; set; }
+            public string label { get; set; }
+            public string entries { get; set; }
+        }
+
+        public int FindCategory(string categoryName)
+        {
+            string apiUrl = "https://www.tistory.com/apis/category/list";
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("output", "json");
+            parameters.Add("blogName", blogName);
+
+            string result = RequestHelper.GetRequest(apiUrl, parameters);
+            JObject json = JObject.Parse(result);
+            var list = json["tistory"]["item"]["categories"] as JArray;
+            Console.WriteLine(list);
+
+            var List = list.ToObject<List<Category>>();
+
+            var FindList = List.Where(x => x.name == categoryName);
+            if (FindList.Count() > 0)
+            {
+                Category category = List.Where(x => x.name == categoryName).First();
+                return Int32.Parse(category.id);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public List<AttachedImage> UploadImages(List<AttachedImage> list)
         {
             foreach(AttachedImage image in list)
@@ -364,8 +333,6 @@ namespace Notion2TistoryConsole
                 Console.WriteLine("===========================================================");
 
                 image.replacer = imageReplacer;
-
-                Delay(2000);
             }
 
             return list;
@@ -390,41 +357,6 @@ namespace Notion2TistoryConsole
             string result = RequestHelper.PostMultipart("https://www.tistory.com/apis/post/write", postDict);
             JObject json = JObject.Parse(result);
             Console.WriteLine(json);
-        }
-
-        public static void UploadPost2(Content content)
-        {
-            Dictionary<string, object> postDict = new Dictionary<string, object>();
-            postDict.Add("access_token", accessToken);
-            postDict.Add("output", "json");
-            postDict.Add("blogName", blogName);
-            postDict.Add("title", content.title);
-            postDict.Add("content", content.content);
-            postDict.Add("visibility", content.visibility.ToString());
-            postDict.Add("categoryId", content.categoryId.ToString());
-            // postDict.Add("published", published);
-            // postDict.Add("slogan", slogan);
-            postDict.Add("tag", string.Join(",", content.tags));
-            postDict.Add("acceptComent", content.acceptComent ? "1" : "0");
-            postDict.Add("password", content.password);
-
-            string result = RequestHelper.PostApplication("https://www.tistory.com/apis/post/write", postDict);
-            JObject json = JObject.Parse(result);
-            Console.WriteLine(json);
-        }
-
-        private static DateTime Delay(int MS)
-        {
-            DateTime ThisMoment = DateTime.Now;
-            TimeSpan duration = new TimeSpan(0, 0, 0, 0, MS);
-            DateTime AfterWards = ThisMoment.Add(duration);
-
-            while (AfterWards >= ThisMoment)
-            {
-                ThisMoment = DateTime.Now;
-            }
-
-            return DateTime.Now;
         }
     }
 }

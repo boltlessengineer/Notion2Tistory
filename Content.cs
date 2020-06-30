@@ -12,17 +12,17 @@ namespace Notion2TistoryConsole
     {
         private const string apiBaseUrl = "https://www.tistory.com/apis/";
 
-        public string title; // 제목
-        public string content; // 내용
-        public int visibility; // 0: 비공개 - 기본값, 1: 보호, 3: 발행
-        public int categoryId; // 카테고리 id
-        // public string published; // 날짜 (TIMESTAMP 이며 미래의 시간을 넣을 경우 예약. 기본값: 현재시간)
-        //public string slogan; // 문자 주소
-        public List<string> tags; // 태그 (POST 요청은 ","로 구분)
-        public bool acceptComent; // 댓글 허용 (POST 요청은 0, 1)
-        public string password; // 보호글 비밀번호
-        public List<AttachedFile> attachedFiles;
-        public List<AttachedImage> images;
+        public string title { get; set; } // 제목
+        public string content { get; set;} // 내용
+        public int visibility { get; set;} // 0: 비공개 - 기본값, 1: 보호, 3: 발행
+        public int categoryId { get; set;} // 카테고리 id
+        // public string published {get; set;} // 날짜 (TIMESTAMP 이며 미래의 시간을 넣을 경우 예약. 기본값: 현재시간)
+        //public string slogan {get; set;} // 문자 주소
+        public List<string> tags { get; set;} // 태그 (POST 요청은 ","로 구분)
+        public bool acceptComent { get; set;} // 댓글 허용 (POST 요청은 0, 1)
+        public string password { get; set;} // 보호글 비밀번호
+        public List<AttachedFile> attachedFiles { get; set;}
+        public List<AttachedImage> images { get; set;}
 
         public Content(string t, string c = "empty page")
         {
@@ -70,54 +70,6 @@ namespace Notion2TistoryConsole
         public void SetImages(List<AttachedImage> list)
         {
             images = list;
-        }
-
-        public Dictionary<string, string> GetPostDict(string token, string blogName)
-        {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            dict.Add("access_token", token);
-            dict.Add("output", "json");
-            dict.Add("blogName", blogName);
-            dict.Add("title", title);
-            dict.Add("content", content);
-            dict.Add("visibility", visibility.ToString());
-            dict.Add("categoryId", categoryId.ToString());
-            // dict.Add("published", published);
-            // dict.Add("slogan", slogan);
-            dict.Add("tag", string.Join(",", tags));
-            dict.Add("acceptComent", acceptComent ? "1" : "0" );
-            dict.Add("password", password);
-            return dict;
-        }
-
-        public async Task WritePost(TistoryAPI client)
-        {
-            string accessToken = client.AccessToken();
-            string blogName = client.BlogName();
-            var j = Task.Run(() => SendAPIPost("post/write", GetPostDict(accessToken, blogName)));
-            JObject json = await j;
-            Console.WriteLine(json);
-            Console.WriteLine("Post Url : {0}", json["tistory"]["url"]);
-        }
-
-        public static async Task<JObject> SendAPIPost(string postUrl, IEnumerable<KeyValuePair<string, string>> contentDict)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(apiBaseUrl);
-            var param = new FormUrlEncodedContent(contentDict);
-            var result = await client.PostAsync(postUrl, param);
-            string responseString = await result.Content.ReadAsStringAsync();
-            JObject json = JObject.Parse(responseString);
-            if (json["tistory"]["status"].ToString() == "200")
-            {
-                Console.WriteLine("Task Success!");
-            }
-            else
-            {
-                Console.WriteLine("ERROR : Server returned error | status: {0}", json["tistory"]["status"]);
-                Console.WriteLine(json["tistory"]["error_message"]);
-            }
-            return json;
         }
     }
 }

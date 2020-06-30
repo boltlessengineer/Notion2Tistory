@@ -19,11 +19,10 @@ namespace Notion2TistoryConsole
             Content content = new Content(title);
             content.SetContent(GetBody(fileContent));
             content.SetVisbility(GetVisibilityType(Table));
-            content.SetCategory(GetCategoryId(Table));
+            content.SetCategory(GetCategoryName(Table));
             content.SetTags(GetTags(Table));
             content.SetCommentAccept(GetAcceptComment(Table));
             content.SetPassword(GetPassword(Table));
-            //content.SetImages(GetImageList(content.content));
 
             return content;
         }
@@ -109,7 +108,7 @@ namespace Notion2TistoryConsole
             return type;
         }
 
-        private static int GetCategoryId(Dictionary<string, string> table)
+        private static int GetCategoryName(Dictionary<string, string> table)
         {
             int category = 0;
             try
@@ -123,7 +122,7 @@ namespace Notion2TistoryConsole
                     }
                     catch
                     {
-                        Console.WriteLine("Error : Can't read Category-id");
+                        Console.WriteLine("Error : Can't read Category Name");
                         Console.WriteLine("Default value is '0'");
                     }
                 }
@@ -135,7 +134,7 @@ namespace Notion2TistoryConsole
             }
             catch
             {
-                Console.WriteLine("Error : Can't extract Category-id");
+                Console.WriteLine("Error : Can't extract Category Name");
                 Console.WriteLine("Default value is '0'");
             }
             return category;
