@@ -344,15 +344,15 @@ namespace Notion2TistoryConsole
             postDict.Add("access_token", accessToken);
             postDict.Add("output", "json");
             postDict.Add("blogName", blogName);
-            postDict.Add("title", content.title);
-            postDict.Add("content", content.content);
-            postDict.Add("visibility", content.visibility.ToString());
-            postDict.Add("categoryId", content.categoryId.ToString());
+            postDict.Add("title", content.Title);
+            postDict.Add("content", content.Article);
+            postDict.Add("visibility", content.Visibility.ToString());
+            postDict.Add("category", content.CategoryId.ToString());
             // postDict.Add("published", published);
             // postDict.Add("slogan", slogan);
-            postDict.Add("tag", string.Join(",", content.tags));
-            postDict.Add("acceptComent", content.acceptComent ? "1" : "0");
-            postDict.Add("password", content.password);
+            postDict.Add("tag", string.Join(",", content.Tags));
+            postDict.Add("acceptComent", content.AcceptComent ? "1" : "0");
+            postDict.Add("password", content.Password);
 
             string result = RequestHelper.PostMultipart("https://www.tistory.com/apis/post/write", postDict);
             JObject json = JObject.Parse(result);

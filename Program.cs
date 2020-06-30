@@ -52,14 +52,16 @@ namespace Notion2TistoryConsole
                                 AttachedList.Add(ImageFile);
                             }
                             */
-                            content.SetImages(NotionReader.GetImageList(content.content, attachedDirPath));
+                            content.Images = NotionReader.GetImageList(content.Article, attachedDirPath);
                             
                         }
-                        content.images = client.UploadImages(content.images);
-                        content.categoryId = client.FindCategory("A");
+                        content.Images = client.UploadImages(content.Images);
+                        content.CategoryId = client.FindCategory(content.CategoryName);
+                        Console.WriteLine(content.CategoryId);
+                        Console.WriteLine("'{0}'", content.CategoryName);
                         content = Converter.ChangeHtml(content);
 
-                        Console.WriteLine(content.content);
+                        Console.WriteLine(content.Article);
                         client.UploadPost(content);
                     }
                 }

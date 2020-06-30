@@ -17,12 +17,13 @@ namespace Notion2TistoryConsole
             Dictionary<string, string> Table = ReadTable(header);
 
             Content content = new Content(title);
-            content.SetContent(GetBody(fileContent));
-            content.SetVisbility(GetVisibilityType(Table));
-            content.SetCategory(GetCategoryName(Table));
-            content.SetTags(GetTags(Table));
-            content.SetCommentAccept(GetAcceptComment(Table));
-            content.SetPassword(GetPassword(Table));
+
+            content.Article = GetBody(fileContent);
+            content.Visibility = GetVisibilityType(Table);
+            content.CategoryName = GetCategoryName(Table);
+            content.Tags = GetTags(Table);
+            content.AcceptComent = GetAcceptComment(Table);
+            content.Password = GetPassword(Table);
 
             return content;
         }
@@ -108,9 +109,9 @@ namespace Notion2TistoryConsole
             return type;
         }
 
-        private static int GetCategoryName(Dictionary<string, string> table)
+        private static string GetCategoryName(Dictionary<string, string> table)
         {
-            int category = 0;
+            string category = "None";
             try
             {
                 try
@@ -119,23 +120,26 @@ namespace Notion2TistoryConsole
                     try
                     {
                         // 시도
+                        category = rowValue.Substring(0, rowValue.LastIndexOf("</"));
+                        category = category.Substring(category.LastIndexOf(">") + 1);
+                        Console.WriteLine("Category Name : {0}", category);
                     }
                     catch
                     {
                         Console.WriteLine("Error : Can't read Category Name");
-                        Console.WriteLine("Default value is '0'");
+                        Console.WriteLine("Default value is 'None'");
                     }
                 }
                 catch
                 {
                     Console.WriteLine("Error : Can't find Category row");
-                    Console.WriteLine("Default value is '0'");
+                    Console.WriteLine("Default value is 'None'");
                 }
             }
             catch
             {
                 Console.WriteLine("Error : Can't extract Category Name");
-                Console.WriteLine("Default value is '0'");
+                Console.WriteLine("Default value is 'None'");
             }
             return category;
         }
@@ -227,7 +231,7 @@ namespace Notion2TistoryConsole
                     string rowValue = table["text" + "Password"];
                     try
                     {
-                        // 시도
+                        password = rowValue;
                     }
                     catch
                     {

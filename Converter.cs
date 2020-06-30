@@ -9,11 +9,11 @@ namespace Notion2TistoryConsole
 {
     class Converter
     {
-        static string comment = "<p>\n</p><p class=\"block-color-gray\">Uploaded by Notion2Tistory v1.0</p>";
+        static string comment = "<p>\n</p><p class=\"block-color-gray\"><a href=\"https://boltlessengineer.tistory.com\">Uploaded by Notion2Tistory v1.0</a></p>";
         
         public static Content ChangeHtml(Content content)
         {
-            string article = content.content;
+            string article = content.Article;
 
             // <body> 태그 안쪽만 남김 (<article> 태그)
             //article = SubByString(content, "<body>", "</body>");
@@ -33,9 +33,9 @@ namespace Notion2TistoryConsole
             article = article.Replace("</div></article>", comment + "</div></article>");
 
             // 이미지 replacer 적용
-            article = ReplaceImages(article, content.images);
+            article = ReplaceImages(article, content.Images);
 
-            content.SetContent(article);
+            content.Article = article;
 
             return content;
         }
