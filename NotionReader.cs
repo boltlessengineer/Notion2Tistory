@@ -144,6 +144,39 @@ namespace Notion2TistoryConsole
             return category;
         }
 
+        private static DateTime GetPublishDate(Dictionary<string, string> table)
+        {
+            DateTime date = DateTime.UtcNow;
+            try
+            {
+                try
+                {
+                    string rowValue = table["relation" + "Publish Date"];
+                    try
+                    {
+                        // 시도
+                        string time = SubByString(rowValue, "<time>", "</time>");
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Error : Can't read Category Name");
+                        Console.WriteLine("Default value is 'None'");
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("Error : Can't find Category row");
+                    Console.WriteLine("Default value is 'None'");
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error : Can't extract Category Name");
+                Console.WriteLine("Default value is 'None'");
+            }
+            return date;
+        }
+
         private static List<string> GetTags(Dictionary<string, string> table)
         {
             List<string> tags = new List<string>();

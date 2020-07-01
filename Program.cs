@@ -13,12 +13,7 @@ namespace Notion2TistoryConsole
             string path = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_Notion_Export\";
 
             string clientTxtPath = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_User\info.txt";
-            string clientId;
-            string clientSK;
-            string redirect;
-            string userID;
-            string userPW;
-            string blogName;
+            string clientId, clientSK, redirect, userID, userPW,blogName;
             string readTxt = File.ReadAllText(clientTxtPath);
             clientId = readTxt.Split("|")[0];
             clientSK = readTxt.Split("|")[1];
@@ -56,12 +51,16 @@ namespace Notion2TistoryConsole
                             
                         }
                         content.Images = client.UploadImages(content.Images);
-                        content.CategoryId = client.FindCategory(content.CategoryName);
-                        Console.WriteLine(content.CategoryId);
-                        Console.WriteLine("'{0}'", content.CategoryName);
+                        if(content.CategoryName == "")
+                        {
+                            content.CategoryId = 0;
+                        }
+                        else
+                        {
+                            content.CategoryId = client.FindCategory(content.CategoryName);
+                        }
                         content = Converter.ChangeHtml(content);
 
-                        Console.WriteLine(content.Article);
                         client.UploadPost(content);
                     }
                 }
