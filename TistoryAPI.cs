@@ -5,8 +5,6 @@ using System.Text;
 using System.IO;
 using System.Web;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Notion2TistoryConsole
@@ -17,13 +15,13 @@ namespace Notion2TistoryConsole
         public const string accessUrl = "https://www.tistory.com/oauth/access_token";
         private const string apiBaseUrl = "https://www.tistory.com/apis/";
 
-        public static string clientID;
-        public static string clientSK;
-        public static string redirect;
-        public static string userID;
-        public static string userPW;
-        public static string blogName;
-        public static string accessToken;
+        public static string clientID { get; set; }
+        public static string clientSK { get; set; }
+        public static string redirect { get; set; }
+        public static string userID { get; set; }
+        public static string userPW { get; set; }
+        public static string blogName { get; set; }
+        public static string accessToken { get; set; }
 
         public TistoryAPI(string cID, string cSK, string redir, string uID, string uPW, string blog)
         {
@@ -40,28 +38,6 @@ namespace Notion2TistoryConsole
             string accessTokenUrl = $"{accessUrl}?client_id={clientID}&client_secret={clientSK}&redirect_uri={redirect}&code={authCode}&grant_type=authorization_code";
 
             accessToken = GetAccessToken(accessTokenUrl);
-        }
-
-        public string AccessToken()
-        {
-            return accessToken;
-        }
-
-        public string BlogName()
-        {
-            return blogName;
-        }
-
-        public void ShowClient()
-        {
-            Console.WriteLine("Client ID  : {0}", clientID);
-            Console.WriteLine("Secret Key : {0}", clientSK);
-        }
-
-        public void ChangeClient(string id, string sk)
-        {
-            clientID = id;
-            clientSK = sk;
         }
 
         private static string GetAccessCode(string ID, string PW, string reqUrl)
@@ -105,7 +81,7 @@ namespace Notion2TistoryConsole
                 int findTo = strResult.IndexOf("&state") - findFrom;
                 string code = strResult.Substring(findFrom, findTo);
                 Console.WriteLine("Got Authorization code");
-                //Console.WriteLine($"Authorization code : {code}");
+                Console.WriteLine($"Authorization code : {code}");
                 return code;
             }
             catch (Exception e)
@@ -257,7 +233,7 @@ namespace Notion2TistoryConsole
 
         public int FindCategory(string categoryName)
         {
-            string apiUrl = "https://www.tistory.com/apis/category/list";
+            string apiUrl = apiBaseUrl + "category/list";
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("access_token", accessToken);
@@ -285,7 +261,9 @@ namespace Notion2TistoryConsole
 
         public List<AttachedImage> UploadImages(List<AttachedImage> list)
         {
-            foreach(AttachedImage image in list)
+            string apiUrl = apiBaseUrl + "post/attach";
+
+            foreach (AttachedImage image in list)
             {
                 Console.WriteLine("Uploading {0}", image.originalPath);
 
@@ -307,7 +285,7 @@ namespace Notion2TistoryConsole
                 }
 
                 string result = RequestHelper.PostMultipart(
-                    "https://www.tistory.com/apis/post/attach",
+                    apiUrl,
                     new Dictionary<string, object>() {
                         { "access_token", accessToken },
                         { "output", "json" },
@@ -340,6 +318,7 @@ namespace Notion2TistoryConsole
 
         public void UploadPost(Content content)
         {
+            string apiUrl = apiBaseUrl + "post/write";
             Dictionary<string, object> postDict = new Dictionary<string, object>();
             postDict.Add("access_token", accessToken);
             postDict.Add("output", "json");
@@ -348,13 +327,15 @@ namespace Notion2TistoryConsole
             postDict.Add("content", content.Article);
             postDict.Add("visibility", content.Visibility.ToString());
             postDict.Add("category", content.CategoryId.ToString());
-            // postDict.Add("published", published);
+            postDict.Add("published", content.Published);
+            Console.WriteLine(content.Published.ToString());
+            Console.WriteLine(content.Published);
             // postDict.Add("slogan", slogan);
             postDict.Add("tag", string.Join(",", content.Tags));
             postDict.Add("acceptComent", content.AcceptComent ? "1" : "0");
             postDict.Add("password", content.Password);
 
-            string result = RequestHelper.PostMultipart("https://www.tistory.com/apis/post/write", postDict);
+            string result = RequestHelper.PostMultipart(apiUrl, postDict);
             JObject json = JObject.Parse(result);
             Console.WriteLine(json);
         }

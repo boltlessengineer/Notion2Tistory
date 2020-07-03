@@ -21,6 +21,8 @@ namespace Notion2TistoryConsole
             content.Article = GetBody(fileContent);
             content.Visibility = GetVisibilityType(Table);
             content.CategoryName = GetCategoryName(Table);
+            content.PublishDate = GetUtcPublishDate(Table);
+            content.Published = ConvertToTimestamp(content.PublishDate);
             content.Tags = GetTags(Table);
             content.AcceptComent = GetAcceptComment(Table);
             content.Password = GetPassword(Table);
@@ -144,37 +146,50 @@ namespace Notion2TistoryConsole
             return category;
         }
 
-        private static DateTime GetPublishDate(Dictionary<string, string> table)
+        private static DateTime GetUtcPublishDate(Dictionary<string, string> table)
         {
-            DateTime date = DateTime.UtcNow;
+            DateTime datetime = DateTime.UtcNow;
             try
             {
                 try
                 {
-                    string rowValue = table["relation" + "Publish Date"];
+                    string rowValue = table["date" + "Publish Date"];
                     try
                     {
-                        // 시도
                         string time = SubByString(rowValue, "<time>", "</time>");
+                        datetime = DateTime.Parse(time.Trim('@'));
+                        datetime = datetime.ToUniversalTime();
+                        Console.WriteLine(datetime);
                     }
                     catch
                     {
-                        Console.WriteLine("Error : Can't read Category Name");
-                        Console.WriteLine("Default value is 'None'");
+                        Console.WriteLine("Error : Can't read Publish Date");
+                        Console.WriteLine("Default value is 'Now'");
                     }
                 }
                 catch
                 {
-                    Console.WriteLine("Error : Can't find Category row");
-                    Console.WriteLine("Default value is 'None'");
+                    Console.WriteLine("Error : Can't find Publish Date row");
+                    Console.WriteLine("Default value is 'Now'");
                 }
             }
             catch
             {
-                Console.WriteLine("Error : Can't extract Category Name");
-                Console.WriteLine("Default value is 'None'");
+                Console.WriteLine("Error : Can't extract Publish Date");
+                Console.WriteLine("Default value is 'Now'");
             }
-            return date;
+            return datetime;
+        }
+
+        private static long ConvertToTimestamp(DateTime dateTime)
+        {
+            var timeSpan = (dateTime - new DateTime(1970, 1, 1, 0, 0, 0));
+
+            long timestamp = (long)timeSpan.TotalSeconds;
+
+            Console.WriteLine(timestamp);
+
+            return timestamp;
         }
 
         private static List<string> GetTags(Dictionary<string, string> table)
@@ -297,7 +312,7 @@ namespace Notion2TistoryConsole
                     string[] icon = { "<span class=\"icon property-icon\">", "</svg></span>" };
                     int iconStart = s.IndexOf(icon[0]);
                     int iconEnd = s.IndexOf(icon[1]) + icon[1].Length;
-                    s = s.Substring(0, iconStart) + s.Substring(iconEnd, s.Length - iconEnd);
+                    s = $"{s.Substring(0, iconStart)}{s[iconEnd..]}";
                 }
                 return s;
             }

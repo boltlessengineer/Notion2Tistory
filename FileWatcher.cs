@@ -33,6 +33,7 @@ namespace Notion2TistoryConsole
                     string tmpPath = TargetPath + @"tmp\";
                     ZipFile.ExtractToDirectory(ev.FullPath, tmpPath);
                     EventHandler(tmpPath);
+                    File.Delete(ev.FullPath);
                 }
                 else
                 {

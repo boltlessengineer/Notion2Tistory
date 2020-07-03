@@ -342,6 +342,7 @@
 .Notion_P .page-body p {
     margin-top: 0.5em !important;
     margin-bottom: 0.5em !important;
+    white-space: pre-line;
 }
 
 .Notion_P .page-body .image {
@@ -352,7 +353,7 @@
     text-align: center;
 }
 
-.Notion_P .page-body p code {
+.Notion_P .page-body code {
     background: rgba(135, 131, 120, 0.15);
     border-radius: 3px;
     padding: 0.2em 0.4em;
