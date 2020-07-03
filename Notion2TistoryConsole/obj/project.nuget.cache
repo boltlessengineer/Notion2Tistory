@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "nLRqB2/lgdlbo+/lqcANNLBMvqK6TsFRmLmySmbSxr7rkeTeO2Rkrv+5Umi4VU+ZQ2RJRZHgWrXHj7YqWYJIcA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\seong\\OneDrive\\Documents\\Projects\\Notion2Tistory\\Notion2TistoryConsole\\Notion2TistoryConsole.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\seong\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
