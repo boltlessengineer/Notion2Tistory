@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Web;
 
 namespace Notion2TistoryConsole
 {
     class Converter
     {
-        static string comment = "<p>\n</p><p class=\"block-color-gray\"><a href=\"https://boltlessengineer.tistory.com\">Uploaded by Notion2Tistory v1.0</a></p>";
+        static string comment = "<p>\n</p><p class=\"block-color-gray\"><a href=\"https://boltlessengineer.tistory.com\">Uploaded by Notion2Tistory v0.9</a></p>";
         
         public static Content ChangeHtml(Content content)
         {

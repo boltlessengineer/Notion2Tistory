@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notion2TistoryConsole", "Notion2TistoryConsole\Notion2TistoryConsole.csproj", "{BB8C8E28-3164-4110-87EB-60B6FF2ECD21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notion2TistoryGUI", "Notion2TistoryGUI\Notion2TistoryGUI.csproj", "{33D01498-B69D-4224-8278-0D7D86EA741D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{BB8C8E28-3164-4110-87EB-60B6FF2ECD21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB8C8E28-3164-4110-87EB-60B6FF2ECD21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB8C8E28-3164-4110-87EB-60B6FF2ECD21}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33D01498-B69D-4224-8278-0D7D86EA741D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33D01498-B69D-4224-8278-0D7D86EA741D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33D01498-B69D-4224-8278-0D7D86EA741D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33D01498-B69D-4224-8278-0D7D86EA741D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

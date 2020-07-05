@@ -1,0 +1,35 @@
+{
+  "version": "0.9.0",
+  "settings": {
+    "htmlPath": "{html export하는 폴더 경로}",
+    "user": {
+      "account": {
+        "id": "{티스토리 아이디}",
+        "password": "{티스토리 비밀번호}",
+        "BlogName": "{티스토리 블로그명('https://'와 '.tistory' 사이)}"
+      },
+      "client": {
+        "AppID": "{앱 아이디}",
+        "SecretKey": "{앱 시크릿 키}",
+        "CallBack": "{redirect url}"
+      }
+    },
+    "default": {
+      "tistory": {
+        "post": {
+          "title": "Notion2Tistory Post",
+          "content": "<h1><a href=\"https://boltlessengineer.tistory.com\">Uploaded by Notion2Tistory v0.9</a></h1>",
+          "visibility": 0,
+          "category": 0,
+          "published": 0,
+          "tag": [
+            "태그1",
+            "태그2"
+          ],
+          "acceptComment": true,
+          "password": ""
+        }
+      }
+    }
+  }
+}

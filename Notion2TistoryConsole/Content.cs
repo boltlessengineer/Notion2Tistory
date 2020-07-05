@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Notion2TistoryConsole
 {
@@ -20,20 +18,5 @@ namespace Notion2TistoryConsole
         public string Password { get; set; } // 보호글 비밀번호
         public List<AttachedFile> AttachedFiles { get; set; }
         public List<AttachedImage> Images { get; set; }
-
-        public Content(string t, string c = "empty page")
-        {
-            Title = t;
-            Article = c;
-            Visibility = 0;
-            CategoryId = 0;
-            PublishDate = DateTime.UtcNow;
-            //slogan = "";
-            Tags = new List<string>();
-            AcceptComent = true;
-            Password = "";
-            AttachedFiles = new List<AttachedFile>();
-            Images = new List<AttachedImage>();
-        }
     }
 }

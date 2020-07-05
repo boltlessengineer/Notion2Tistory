@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Notion2TistoryConsole
 {
@@ -10,20 +7,10 @@ namespace Notion2TistoryConsole
     {
         private static void Main(string[] args)
         {
-            string path = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_Notion_Export\";
+            string jsonPath = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_User\test.json";
+            Settings setting = new Settings(jsonPath);
 
-            string clientTxtPath = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_User\info.txt";
-            string clientId, clientSK, redirect, userID, userPW,blogName;
-            string readTxt = File.ReadAllText(clientTxtPath);
-            clientId = readTxt.Split("|")[0];
-            clientSK = readTxt.Split("|")[1];
-            redirect = readTxt.Split("|")[2];
-            userID = readTxt.Split("|")[3];
-            userPW = readTxt.Split("|")[4];
-            blogName = readTxt.Split("|")[5];
-            Console.WriteLine("{0}\n{1}\n{2}\n{3}\n{4}\n{5}", clientId, clientSK, redirect, userID, userPW, blogName);
-
-            TistoryAPI client = new TistoryAPI(clientId, clientSK, redirect, userID, userPW, blogName);
+            TistoryAPI client = new TistoryAPI(setting);
             
             void EventHandler (string tmpPath)
             {
@@ -38,9 +25,9 @@ namespace Notion2TistoryConsole
                         string attachedDirPath = file.FullName.Replace(".html", "");
                         if(Directory.Exists(attachedDirPath))
                         {
+                            /*
                             DirectoryInfo attachedFileDir = new DirectoryInfo(attachedDirPath);
                             List<FileInfo> AttachedList = new List<FileInfo>();
-                            /*
                             foreach (FileInfo ImageFile in attachedFileDir.GetFiles())
                             {
                                 Console.WriteLine(ImageFile.FullName);
@@ -48,7 +35,6 @@ namespace Notion2TistoryConsole
                             }
                             */
                             content.Images = NotionReader.GetImageList(content.Article, attachedDirPath);
-                            
                         }
                         content.Images = client.UploadImages(content.Images);
                         if(content.CategoryName == "")
@@ -74,8 +60,8 @@ namespace Notion2TistoryConsole
                 }
             }
             
-            FileWatcher watcher = new FileWatcher(path); //path는 _NotionExport 경로
-            watcher.InitWatcher(EventHandler); // EventHandler = Created 함수
+            FileWatcher watcher = new FileWatcher(setting.HtmlPath);
+            watcher.InitWatcher(EventHandler);
         }
     }
 }

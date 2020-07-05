@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Notion2TistoryConsole
 {
     class NotionReader
     {
+        public static Content DefaultContent { get; set; }
         public static Content Read(string filePath)
         {
             string fileContent = File.ReadAllText(filePath);
             string header = ExtractHeader(fileContent);
 
-            string title = GetTitle(header);
             Dictionary<string, string> Table = ReadTable(header);
 
-            Content content = new Content(title);
+            Content content = DefaultContent;
 
+            content.Title = GetTitle(header);
             content.Article = GetBody(fileContent);
             content.Visibility = GetVisibilityType(Table);
             content.CategoryName = GetCategoryName(Table);
@@ -38,7 +38,7 @@ namespace Notion2TistoryConsole
 
         private static string GetTitle(string header)
         {
-            string title = "Notion Page";
+            string title = DefaultContent.Title;
             try
             {
                 title = header.Split("<h1 class=\"page-title\">")[1].Split("</h1>")[0];
@@ -47,7 +47,6 @@ namespace Notion2TistoryConsole
             catch
             {
                 Console.WriteLine("Error : Can't find page title");
-                Console.WriteLine("Default value is 'Notion Page'");
             }
             return title;
         }
@@ -64,7 +63,7 @@ namespace Notion2TistoryConsole
 
         private static int GetVisibilityType(Dictionary<string, string> table)
         {
-            int type = 0;
+            int type = DefaultContent.Visibility;
             try
             {
                 try
@@ -94,19 +93,16 @@ namespace Notion2TistoryConsole
                     catch
                     {
                         Console.WriteLine("Error : Can't read Visbility type");
-                        Console.WriteLine("Default value is 'false'");
                     }
                 }
                 catch
                 {
                     Console.WriteLine("Error : Can't find Visbility row");
-                    Console.WriteLine("Default value is 'false'");
                 }
             }
             catch
             {
                 Console.WriteLine("Error : Can't extract CommentAccept");
-                Console.WriteLine("Default value is 'false'");
             }
             return type;
         }
@@ -129,19 +125,16 @@ namespace Notion2TistoryConsole
                     catch
                     {
                         Console.WriteLine("Error : Can't read Category Name");
-                        Console.WriteLine("Default value is 'None'");
                     }
                 }
                 catch
                 {
                     Console.WriteLine("Error : Can't find Category row");
-                    Console.WriteLine("Default value is 'None'");
                 }
             }
             catch
             {
                 Console.WriteLine("Error : Can't extract Category Name");
-                Console.WriteLine("Default value is 'None'");
             }
             return category;
         }
@@ -164,19 +157,16 @@ namespace Notion2TistoryConsole
                     catch
                     {
                         Console.WriteLine("Error : Can't read Publish Date");
-                        Console.WriteLine("Default value is 'Now'");
                     }
                 }
                 catch
                 {
                     Console.WriteLine("Error : Can't find Publish Date row");
-                    Console.WriteLine("Default value is 'Now'");
                 }
             }
             catch
             {
                 Console.WriteLine("Error : Can't extract Publish Date");
-                Console.WriteLine("Default value is 'Now'");
             }
             return datetime;
         }
@@ -194,7 +184,7 @@ namespace Notion2TistoryConsole
 
         private static List<string> GetTags(Dictionary<string, string> table)
         {
-            List<string> tags = new List<string>();
+            List<string> tags = DefaultContent.Tags;
             try
             {
                 try
@@ -226,7 +216,7 @@ namespace Notion2TistoryConsole
 
         private static bool GetAcceptComment(Dictionary<string, string> table)
         {
-            bool accept = false;
+            bool accept = DefaultContent.AcceptComent;
             try
             {
                 try
@@ -252,26 +242,23 @@ namespace Notion2TistoryConsole
                     catch
                     {
                         Console.WriteLine("Error : Can't read CommentAccept");
-                        Console.WriteLine("Default value is 'false'");
                     }
                 }
                 catch
                 {
                     Console.WriteLine("Error : Can't find Comment row");
-                    Console.WriteLine("Default value is 'false'");
                 }
             }
             catch
             {
                 Console.WriteLine("Error : Can't extract CommentAccept");
-                Console.WriteLine("Default value is 'false'");
             }
             return accept;
         }
 
         private static string GetPassword(Dictionary<string, string> table)
         {
-            string password = "";
+            string password = DefaultContent.Password;
             try
             {
                 try
@@ -284,19 +271,16 @@ namespace Notion2TistoryConsole
                     catch
                     {
                         Console.WriteLine("Error : Can't read Password");
-                        Console.WriteLine("Default value is ''");
                     }
                 }
                 catch
                 {
                     Console.WriteLine("Error : Can't find Password row");
-                    Console.WriteLine("Default value is ''");
                 }
             }
             catch
             {
                 Console.WriteLine("Error : Can't extract Password");
-                Console.WriteLine("Default value is ''");
             }
             return password;
         }
@@ -326,7 +310,6 @@ namespace Notion2TistoryConsole
                 string type, name, content;
                 type = SubByString(r, "<tr class=\"property-row property-row-", "\">");
                 name = SubByString(r, "<th>", "</th>");
-                Console.WriteLine("type : {0} | name : {1}", type, name);
                 content = SubByString(r, "<td>", "</td>");
                 Table.Add(type + name, content);
             }

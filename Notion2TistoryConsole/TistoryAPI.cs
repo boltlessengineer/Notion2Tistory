@@ -11,8 +11,8 @@ namespace Notion2TistoryConsole
 {
     class TistoryAPI
     {
-        public const string oauthUrl = "https://www.tistory.com/oauth/authorize";
-        public const string accessUrl = "https://www.tistory.com/oauth/access_token";
+        private const string oauthUrl = "https://www.tistory.com/oauth/authorize";
+        private const string accessUrl = "https://www.tistory.com/oauth/access_token";
         private const string apiBaseUrl = "https://www.tistory.com/apis/";
 
         public static string clientID { get; set; }
@@ -23,14 +23,17 @@ namespace Notion2TistoryConsole
         public static string blogName { get; set; }
         public static string accessToken { get; set; }
 
-        public TistoryAPI(string cID, string cSK, string redir, string uID, string uPW, string blog)
+        public TistoryAPI(Settings settings)
         {
-            clientID = cID;
-            clientSK = cSK;
-            redirect = redir;
-            userID = uID;
-            userPW = uPW;
-            blogName = blog;
+            JObject account = settings.UserAccount;
+            JObject client = settings.UserClient;
+
+            userID = account["id"].ToString();
+            userPW = account["password"].ToString();
+            blogName = account["BlogName"].ToString();
+            clientID = client["AppID"].ToString();
+            clientSK = client["SecretKey"].ToString();
+            redirect = client["CallBack"].ToString();
             accessToken = "";
 
             string requestUrl = $"{oauthUrl}?client_id={clientID}&redirect_uri={redirect}&response_type=code";
@@ -81,7 +84,7 @@ namespace Notion2TistoryConsole
                 int findTo = strResult.IndexOf("&state") - findFrom;
                 string code = strResult.Substring(findFrom, findTo);
                 Console.WriteLine("Got Authorization code");
-                Console.WriteLine($"Authorization code : {code}");
+                //Console.WriteLine($"Authorization code : {code}");
                 return code;
             }
             catch (Exception e)
@@ -105,7 +108,7 @@ namespace Notion2TistoryConsole
                     string responseFromServer = reader.ReadToEnd();
                     token = responseFromServer.Substring(13);
                     Console.WriteLine("Got Access Token");
-                    //Console.WriteLine($"Access Token : {token}");
+                    Console.WriteLine($"Access Token : {token}");
                 }
                 response.Close();
                 return token;
@@ -243,7 +246,7 @@ namespace Notion2TistoryConsole
             string result = RequestHelper.GetRequest(apiUrl, parameters);
             JObject json = JObject.Parse(result);
             var list = json["tistory"]["item"]["categories"] as JArray;
-            Console.WriteLine(list);
+            //Console.WriteLine(list);
 
             var List = list.ToObject<List<Category>>();
 
@@ -273,7 +276,7 @@ namespace Notion2TistoryConsole
                     ContentType = "image/png",
                     FilePath = image.originalPath
                 };
-
+                /*
                 FileInfo fileInfo = new FileInfo(file.FilePath);
                 if (fileInfo.Exists)
                 {
@@ -283,7 +286,7 @@ namespace Notion2TistoryConsole
                 {
                     Console.WriteLine("NOP");
                 }
-
+                */
                 string result = RequestHelper.PostMultipart(
                     apiUrl,
                     new Dictionary<string, object>() {
@@ -303,12 +306,13 @@ namespace Notion2TistoryConsole
                 
                 string imageId = url.Substring(url.IndexOf("image/") + 6, url.Length - url.IndexOf("image/") - 10);
                 string imageReplacer = "[##_Image|t/cfile@" + imageId + "|alignCenter|data-filename=\"thumbnail.png\" data-origin-width=&quot;0&quot; data-origin-height=&quot;0&quot; data-ke-mobilestyle=&quot;widthContent&quot;|" + image.originalCaption + "||_##]";
+                /*
                 Console.WriteLine("===========================================================");
                 Console.WriteLine("Replacer : {0}", replacer);
                 Console.WriteLine("Url      : {0}", url);
-                Console.WriteLine("===========================================================");
                 Console.WriteLine("Image Replacer : {0}", imageReplacer);
                 Console.WriteLine("===========================================================");
+                */
 
                 image.replacer = imageReplacer;
             }
@@ -328,11 +332,9 @@ namespace Notion2TistoryConsole
             postDict.Add("visibility", content.Visibility.ToString());
             postDict.Add("category", content.CategoryId.ToString());
             postDict.Add("published", content.Published);
-            Console.WriteLine(content.Published.ToString());
-            Console.WriteLine(content.Published);
             // postDict.Add("slogan", slogan);
             postDict.Add("tag", string.Join(",", content.Tags));
-            postDict.Add("acceptComent", content.AcceptComent ? "1" : "0");
+            postDict.Add("acceptComment", content.AcceptComent ? "1" : "0");
             postDict.Add("password", content.Password);
 
             string result = RequestHelper.PostMultipart(apiUrl, postDict);
