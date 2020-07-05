@@ -20,7 +20,7 @@
           "title": "Notion2Tistory Post",
           "content": "<h1><a href=\"https://boltlessengineer.tistory.com\">Uploaded by Notion2Tistory v0.9</a></h1>",
           "visibility": 0,
-          "category": 0,
+          "category": "{카테고리 이름}",
           "published": 0,
           "tag": [
             "태그1",

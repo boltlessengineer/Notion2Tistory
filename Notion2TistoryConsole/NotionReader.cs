@@ -109,12 +109,20 @@ namespace Notion2TistoryConsole
 
         private static string GetCategoryName(Dictionary<string, string> table)
         {
-            string category = "None";
+            string category = DefaultContent.CategoryName;
             try
             {
                 try
                 {
-                    string rowValue = table["relation" + "Category"];
+                    string rowValue;
+                    if (table.ContainsKey("select" + "Category"))
+                    {
+                        rowValue = table["select" + "Category"];
+                    }
+                    else
+                    {
+                        rowValue = table["relation" + "Category"];
+                    }
                     try
                     {
                         // 시도

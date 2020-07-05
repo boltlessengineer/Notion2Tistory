@@ -31,7 +31,7 @@ namespace Notion2TistoryConsole
                 Title = defaultPost["title"].ToString(),
                 Article = defaultPost["content"].ToString(),
                 Visibility = defaultPost["visibility"].ToObject<int>(),
-                CategoryId = defaultPost["category"].ToObject<int>(),
+                CategoryName = defaultPost["category"].ToString(),
                 PublishDate = DateTime.UtcNow,
                 //slogan = "",
                 Tags = defaultPost["tag"].ToObject<List<string>>(),

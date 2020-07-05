@@ -7,7 +7,8 @@ namespace Notion2TistoryConsole
     {
         private static void Main(string[] args)
         {
-            string jsonPath = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_User\test.json";
+            //string jsonPath = @"C:\Users\seong\OneDrive\Documents\Personal\Blog\_User\test.json";
+            string jsonPath = Console.ReadLine();
             Settings setting = new Settings(jsonPath);
 
             TistoryAPI client = new TistoryAPI(setting);
