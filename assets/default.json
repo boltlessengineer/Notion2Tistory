@@ -1,0 +1,12 @@
+{
+    "default": {
+        "title": "Notion2Tistory Post",
+        "content": "<h1><a href=\"https://boltlessengineer.tistory.com\">Uploaded by Notion2Tistory v0.9</a></h1>",
+        "visibility": 0,
+        "category": "",
+        "slogan": "",
+        "tag": [],
+        "acceptComment": true,
+        "password": ""
+    }
+}
