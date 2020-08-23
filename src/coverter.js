@@ -49,10 +49,14 @@ function readPage(html) {
 
     const header = notiondoc.querySelector("header");
     const title = header.querySelector(".page-title").textContent;
-    const table = header.querySelector("table").querySelectorAll("tr");
-    const tableList = Array.prototype.slice.call(table);
+    const table = header.querySelector("table");
 
-    const properties = tableList.map(tr => {
+    let properties = [];
+
+    if(table){
+    const tableList = Array.prototype.slice.call(table.querySelectorAll("tr"));
+
+    properties = tableList.map(tr => {
         const propName = tr.querySelector("th").textContent;
         const csplit = Array.prototype.slice.call(tr.classList)[1].split("-");
         const propType = csplit[csplit.length - 1];
@@ -82,6 +86,7 @@ function readPage(html) {
         };
         return prop;
     });
+    }
     console.log(properties);
     const tistoryProps = [
         "Visibility",
@@ -131,8 +136,8 @@ function convertHtml(page) {
     //헤더 삭제
     article.querySelector("header").remove();
 
-    //notion_p css 적용
-    article.classList.add("notion_p");
+    //Notion_P css 적용
+    article.classList.add("Notion_P");
 
     //토글 전부 접기
     const toggles = article.querySelectorAll("ul.toggle>li>details");
