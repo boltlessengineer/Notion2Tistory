@@ -50,9 +50,13 @@ searchFileBtn.addEventListener("click", async () => {
     console.log(notionPage);
 });
 
-copyHtmlBtn.addEventListener("click", () => {
+copyHtmlBtn.addEventListener("click", async () => {
     clipboard.writeText(notionPage.content.outerHTML);
     console.log("clipboard copied!");
+    await dialog.showMessageBox({
+        title: "HTML Copied!",
+        message: "COPIED!"
+    });
 });
 
 downloadHtmlBtn.addEventListener("click", async () => {
@@ -77,9 +81,8 @@ downloadHtmlBtn.addEventListener("click", async () => {
 });
 
 uploadToTistoryBtn.addEventListener("click", async () => {
-    await dialog.showMessageBox({
-        title: "Error",
-        message: "아직 준비중인 기능입니다.",
-        detail: "Tistory 블로그 자동 업로드 기능은 v1.0 부터 지원할 예정입니다."
-    });
+    await dialog.showErrorBox(
+        "아직 준비 중인 기능입니다.",
+        "Tistory 블로그 자동 업로드 기능은 v1.0 부터 지원할 예정입니다."
+    );
 });
