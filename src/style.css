@@ -28,11 +28,24 @@ body {
   transition: 0.4s;
 }
 
+#homeBtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  //background-color: #2ecc71;
+  color: #2ecc71;
+  font-weight: bold;
+  width: 80px;
+  height: 80px;
+  border-radius: 80px;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
 .btnContainer {
-  /* position: absolute;
-  top: 10%;
-  left: 50%;
-  transform: translate(-50%, -10%); */
   display: inline-block;
   background: #ecf0f1;
   height: 80px;
@@ -100,3 +113,4 @@ body {
   color: transparent;
   user-select: none;
 }
+
