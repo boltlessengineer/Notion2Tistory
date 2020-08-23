@@ -3,26 +3,26 @@ const path = require("path");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
-    // eslint-disable-line global-require
-    app.quit();
+  // eslint-disable-line global-require
+  app.quit();
 }
 
 const createWindow = () => {
-    // Create the browser window.
-    const mainWindow = new BrowserWindow({
-        width: 600,
-        height: 500,
-        webPreferences: {
-            nodeIntegration: true
-        },
-        icon: path.join(__dirname, '../assets/icons/png/icon.png')
-    });
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    width: 540,
+    height: 360,
+    webPreferences: {
+      nodeIntegration: true,
+    },
+    icon: path.join(__dirname, "../assets/icons/png/icon.png"),
+  });
 
-    // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, "index.html"));
+  // and load the index.html of the app.
+  mainWindow.loadFile(path.join(__dirname, "index.html"));
 
-    // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
@@ -34,17 +34,17 @@ app.on("ready", createWindow);
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") {
-        app.quit();
-    }
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
 });
 
 app.on("activate", () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-    }
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
 });
 
 // In this file you can include the rest of your app's specific main process

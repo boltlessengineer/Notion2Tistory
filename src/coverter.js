@@ -1,7 +1,7 @@
 const { JSDOM } = require("jsdom");
 const { readFileSync } = require("fs");
 //temp
-const http = require("http");
+//const http = require("http");
 
 class NotionPage {
     static defaultPage = JSON.parse(readFileSync("./assets/default.json")).post;
@@ -32,10 +32,13 @@ class NotionPage {
 let DefaultPage = new NotionPage();
 
 function readPage(html) {
+    console.log(html);
     const dom = new JSDOM(html, { runscripts: "outside-only" });
     const { document: notiondoc } = dom.window;
 
     const article = notiondoc.querySelector("article");
+    console.log(article);
+    console.log(notiondoc);
 
     //끝에 주석 추가
     const comment = notiondoc.createElement("div");
@@ -108,14 +111,18 @@ function readPage(html) {
 }
 
 function convertPage(html) {
-    notionPage = readPage(html);
+    const notionPage = readPage(html);
     convertHtml(notionPage);
     console.log(notionPage.content.outerHTML);
+    /* preview test for debug
     http.createServer((req, res) => {
         res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
         res.write(notionPage.content.outerHTML);
         res.end();
     }).listen(8080);
+    */
+
+    return notionPage;
 }
 
 function convertHtml(page) {
@@ -147,6 +154,8 @@ function convertHtml(page) {
     });
 
     //이미지 replacer
+
+    return page;
 }
 
 function getEmbedUrl(url) {
@@ -177,5 +186,5 @@ function getEmbedUrl(url) {
 
 module.exports = {
     readHtml: readPage,
-    convertHtml: convertPage
+    convertToPost: convertPage
 };

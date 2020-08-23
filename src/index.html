@@ -2,36 +2,60 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Hello World!</title>
-        <link rel="stylesheet" href="index.css" />
-        <script defer src="./main.js"></script>
+        <title>Notion2Tistory</title>
+        <link rel="stylesheet" href="style.css" />
+        <script defer src="./renderer.js"></script>
     </head>
     <body>
-        <h1>Select exported zip file</h1>
-        <div class="btnContainer">
-            <div id="uploadZipBtn" class="button">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="icon icon-tabler icon-tabler-file-plus"
-                    width="100"
-                    height="100"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="#2c3e50"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path stroke="none" d="M0 0h24v24H0z" />
-                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                    <path
-                        d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"
-                    />
-                    <line x1="12" y1="11" x2="12" y2="17" />
-                    <line x1="9" y1="14" x2="15" y2="14" />
-                </svg>
+        <div class="container">
+            <div class="wrapper">
+                <div class="page1 open">
+                    <div class="pageText">Select exported zip file</div>
+                </div>
+                <div class="page2 close">
+                    <div class="pageText">HTML convert complete!</div>
+                </div>
+                <div class="page3 close">
+                    <div class="pageText">Download HTML file</div>
+                </div>
             </div>
+            <div class="wrapper">
+                <div class="btnContainer">
+                    <div class="page1 btnCon open">
+                        <div id="uploadZipBtn" class="button">File</div>
+                    </div>
+                    <div class="page2 btnCon close">
+                        <div id="" class="button">Done!</div>
+                    </div>
+                    <div class="page3 btnCon close">
+                        <div class="btnMenu">
+                            <div id="copyHtmlBtn" class="button">
+                                <div
+                                    class="btnBg"
+                                    style="background-color: #f1c40f;"
+                                ></div>
+                                <div class="btnImg">Copy</div>
+                            </div>
+                            <div id="downloadHtmlBtn" class="button">
+                                <div
+                                    class="btnBg"
+                                    style="background-color: #3498db;"
+                                ></div>
+                                <div class="btnImg">Download</div>
+                            </div>
+                            <div id="uploadToTistoryBtn" class="button">
+                                <div
+                                    class="btnBg"
+                                    style="background-color: #e67e22;"
+                                ></div>
+                                <div class="btnImg">Tistory</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <button id="selectNotionBtn">Search</button> -->
         </div>
-        <button id="selectNotionBtn">Search</button>
     </body>
+    <script></script>
 </html>
