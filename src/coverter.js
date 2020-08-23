@@ -1,10 +1,10 @@
 const { JSDOM } = require("jsdom");
-const { readFileSync } = require("fs");
+// const { readFileSync } = require("fs");
 //temp
 //const http = require("http");
 
 class NotionPage {
-    static defaultPage = JSON.parse(readFileSync("./assets/default.json")).post;
+    // static defaultPage = JSON.parse(readFileSync("./assets/default.json")).post;
 
     constructor(tempArg) {
         const defaultPage = Object.assign({}, NotionPage.defaultPage);
