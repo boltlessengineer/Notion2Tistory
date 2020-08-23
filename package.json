@@ -1,7 +1,7 @@
 {
   "name": "notion2tistory",
   "productName": "Notion2Tistory",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Notion to Tistory. Converts notion html file to upload to Tistory",
   "main": "src/index.js",
   "scripts": {
