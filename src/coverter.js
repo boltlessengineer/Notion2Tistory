@@ -5,6 +5,15 @@ const { JSDOM } = require("jsdom");
 
 class NotionPage {
     // static defaultPage = JSON.parse(readFileSync("./assets/default.json")).post;
+    static defaultPage = {
+        Title: "Notion2Tistory Post",
+        Visibility: "Private",
+        Category: "",
+        Slogan: "",
+        Tag: ["test1", "test2"],
+        Comment: true,
+        Password: ""
+    }
 
     constructor(tempArg) {
         const defaultPage = Object.assign({}, NotionPage.defaultPage);
@@ -65,9 +74,9 @@ function readPage(html) {
             const checkbox = tr.querySelector("td .checkbox");
             const boxState = Array.prototype.slice.call(checkbox.classList)[1];
             if (boxState === "checkbox-on") {
-                propVal = "on";
+                propVal = true;
             } else {
-                propVal = "off";
+                propVal = false;
             }
         } else if (propType === "multi_select") {
             const spans = tr.querySelectorAll("td span");

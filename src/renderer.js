@@ -6,12 +6,15 @@ const fs = require("fs");
 const path = require("path");
 const { searchFile, readFile } = require("./readFile.js");
 const { convertToPost } = require("./coverter.js");
+const tistory = require("./api/tistory.js");
 
 const homeBtn = document.getElementById("homeBtn");
 const searchFileBtn = document.getElementById("uploadZipBtn");
 const copyHtmlBtn = document.getElementById("copyHtmlBtn");
 const downloadHtmlBtn = document.getElementById("downloadHtmlBtn");
 const uploadToTistoryBtn = document.getElementById("uploadToTistoryBtn");
+
+const changeText = (text, option="down") => {}
 
 const changePage = pageNum => {
     const page = "page" + pageNum;
@@ -81,8 +84,57 @@ downloadHtmlBtn.addEventListener("click", async () => {
 });
 
 uploadToTistoryBtn.addEventListener("click", async () => {
-    await dialog.showErrorBox(
-        "아직 준비 중인 기능입니다.",
-        "Tistory 블로그 자동 업로드 기능은 v1.0 부터 지원할 예정입니다."
-    );
+    await tistory.send(notionPage)
 });
+
+function signInWithPopup() {
+    return new Promise((res, rej) => {
+        const authWin = new BrowserWindow({
+            width: 1000,
+            height: 800,
+            show: false,
+            "node-integration": false
+        });
+
+        const TISTORY_OAUTH =
+            "https://www.tistory.com/oauth/authorize?client_id=ff97cbe9c5811dbf23fc9f9622f3d675&redirect_uri=http://boltlessengineer.tistory.com&response_type=token";
+
+        const urlParams = {
+            client_id: "ff97cbe9c5811dbf23fc9f9622f3d675",
+            redirect_uri: "https://boltlessengineer.tistory.com",
+            response_type: "token"
+        };
+
+        const authUrl = `https://www.tistory.com/auth/login?redirectUrl=${encodeURIComponent(
+            TISTORY_OAUTH
+        )}`;
+
+        const handleNavigation = url => {
+            const raw_token = /\#access_token=([^&]*)/.exec(url);
+            const accessToken =
+                raw_token && raw_token.length > 1 ? raw_token[1] : null;
+
+            if (accessToken) {
+                console.log(`access_token : ${accessToken}`);
+                authWin.close();
+                res(accessToken);
+            } else {
+                authWin.show();
+            }
+        };
+        authWin.loadURL(TISTORY_OAUTH);
+
+        authWin.webContents.on("did-navigate", (event, url) => {
+            console.log("did-navigate");
+            handleNavigation(url);
+        });
+
+        authWin.webContents.on(
+            "did-get-redirect-request",
+            (event, oldUrl, newUrl) => {
+                console.log("did-get-redirect-request");
+                handleNavigation(newUrl);
+            }
+        );
+    });
+}
