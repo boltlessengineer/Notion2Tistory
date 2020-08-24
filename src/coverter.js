@@ -1,6 +1,5 @@
 const { JSDOM } = require("jsdom");
 // const { readFileSync } = require("fs");
-//temp
 //const http = require("http");
 
 class NotionPage {
@@ -22,10 +21,6 @@ class NotionPage {
     }
 
     /*
-    access_token={access-token}
-    &output={output-type}
-    &blogName={blog-name}
-
     title ---------> title={title}                   //제목
     content -------> content={content}               //내용
     visibility ----> visibility={visibility}         //발행상태 (0:비공개, 1:보호, 2:발행)
@@ -101,7 +96,7 @@ function readPage(html) {
         "Visibility",
         "Category",
         "Slogan",
-        "Publish Date",
+        "PublishDate",
         "Tag",
         "AcceptComment",
         "Password"
@@ -128,13 +123,6 @@ function convertPage(html) {
     const notionPage = readPage(html);
     convertHtml(notionPage);
     console.log(notionPage.content.outerHTML);
-    /* preview test for debug
-    http.createServer((req, res) => {
-        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-        res.write(notionPage.content.outerHTML);
-        res.end();
-    }).listen(8080);
-    */
 
     return notionPage;
 }
