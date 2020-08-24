@@ -1,6 +1,15 @@
 const request = require("request");
 const { BrowserWindow } = require("electron").remote;
 
+class User {
+    constructor(accessToken, blogName) {
+        this.accessToken = accessToken;
+        this.blogName = blogName;
+    }
+}
+
+let usr;
+
 const TISTORY_OAUTH =
     "https://www.tistory.com/oauth/authorize?client_id=ff97cbe9c5811dbf23fc9f9622f3d675&redirect_uri=http://boltlessengineer.tistory.com&response_type=token";
 
@@ -54,49 +63,105 @@ const getAccessToken = () => {
     });
 };
 
+const getBlogName = () => {
+    return "boltlessengineer";
+};
+
+const getUser = async () => {
+    const accessToken = await getAccessToken();
+    const blogName = await getBlogName();
+    usr = new User(accessToken, blogName);
+    console.log(usr);
+};
+
 const findCategory = async categoryName => {
-    request(
-        {
-            uri: "https://www.tistory.com/apis/category/list",
-            method: "GET",
-            qs: {
-                accessToken: await getAccessToken(),
-                output: "json",
-                blogName: "boltless-sub"
-            }
-        },
-        (err, res, body) => {
-            console.log(err);
-            console.log(res);
-            console.log(body);
+    const categoryId = "";
+    const query = {
+        access_token: usr.accessToken,
+        output: "json",
+        blogName: usr.blogName
+    };
+    console.log(query);
+    const myRequest = () => {
+        return new Promise((res, rej) => {
+            request(
+                {
+                    uri: "https://www.tistory.com/apis/category/list",
+                    method: "GET",
+                    qs: query
+                },
+                (err, response, body) => {
+                    console.log(err);
+                    console.log(response);
+                    console.log(body);
+                    const resBody = JSON.parse(body).tistory;
+                    if (resBody.status != 200) {
+                        rej(
+                            `Error [${resBody.status}] : ${resBody.error_message}`
+                        );
+                    } else {
+                        res(resBody.item.categories);
+                    }
+                }
+            );
+        });
+    };
+    const categoryList = await myRequest();
+    console.log(categoryList);
+    if (categoryList) {
+        const foundList = categoryList.filter(
+            category => category.name === categoryName
+        );
+        if (foundList.length > 0) {
+            return foundList[0].id.toString();
+        } else {
+            return "";
         }
-    );
+    }
 };
 
 const uploadPost = async notionPage => {
-    const accessToken = await getAccessToken();
-    console.log("hm");
-    //const categoryId = await findCategory(notionPage.Category);
+    const categoryId = await findCategory(notionPage.Category);
+    console.log(categoryId);
     console.log("start");
+    console.log(`Publish Date : ${notionPage.PublishDate}`);
+    const publishTimestamp =
+        Date.parse(notionPage.PublishDate.substring(1)) / 1000;
+    console.log(publishTimestamp);
+    const vis = notionPage.Visibility.toLowerCase();
+    let visibility = "0"; //private
+    switch (vis) {
+        case "protected":
+            visibility = "1";
+            break;
+        case "public":
+            visibility = "3";
+            break;
+    }
+
+    const form = {
+        access_token: usr.accessToken,
+        output: "json",
+        blogName: usr.blogName,
+        title: notionPage.Title,
+        content: notionPage.content.outerHTML,
+        visibility: visibility,
+        category: categoryId,
+        published: publishTimestamp.toString(),
+        tag: notionPage.Tag.join(","),
+        acceptComment: notionPage.Comment ? "1" : "0",
+        password: notionPage.Password
+    };
+    console.log(form);
+
     request(
         {
             uri: "https://www.tistory.com/apis/post/write",
             method: "POST",
-            form: {
-                access_token: accessToken,
-                output: "json",
-                blogName: "boltlessengineer",
-                title: notionPage.Title,
-                content: notionPage.content.outerHTML,
-                visibility: "",
-                tag: notionPage.Tag.join(","),
-                acceptComment: notionPage.Comment ? "1" : "0",
-                password: notionPage.Password
-            }
+            form: form
         },
         (err, res, body) => {
             const resBody = JSON.parse(body).tistory;
-            console.log(resBody.status);
             if (resBody.status != 200) {
                 console.log(
                     `Error [${resBody.status}] : ${resBody.error_message}`
@@ -109,5 +174,7 @@ const uploadPost = async notionPage => {
 };
 
 module.exports = {
-    send: uploadPost
+    send: uploadPost,
+    user: usr,
+    getUser: getUser
 };
