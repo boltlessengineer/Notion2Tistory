@@ -84,7 +84,7 @@ const createBtn = (text, clickHandler) => {
     //[ToDo]
     //👆 edit this...
     btn.addEventListener("click", clickHandler);
-    return createBtn;
+    return btn;
 }
 
 homeBtn.addEventListener("click", () => {

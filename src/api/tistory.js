@@ -120,6 +120,26 @@ const findCategory = async categoryName => {
     }
 };
 
+const uploadData = async data => {
+    const requestUri = "https://www.tistory.com/apis/post/attach";
+    const formData = {
+        access_token: usr.accessToken,
+        output: "json",
+        blogName: usr.blogName,
+        uploadedfile: data
+    };
+    request.post({ url: requestUri, formData: formData }, (err, res, body) => {
+        const resBody = JSON.parse(body).tistory;
+        if (resBody.status != 200) {
+            console.log(`Error [${resBody.status}] : ${resBody.error_message}`);
+        } else {
+            console.log(resBody);
+        }
+    });
+};
+
+const uploadImage = async data => {};
+
 const uploadPost = async notionPage => {
     const categoryId = await findCategory(notionPage.Category);
     console.log(categoryId);
@@ -176,5 +196,6 @@ const uploadPost = async notionPage => {
 module.exports = {
     send: uploadPost,
     user: usr,
-    getUser: getUser
+    getUser: getUser,
+    uploadData
 };
