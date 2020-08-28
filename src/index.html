@@ -1,62 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Notion2Tistory</title>
-        <link rel="stylesheet" href="style.css" />
-        <script defer src="./renderer.js"></script>
-    </head>
-    <body>
-        <div class="container">
-            <div id="homeBtn">Home</div>
-            <div class="wrapper">
-                <div class="page1 open">
-                    <div class="pageText">Select exported zip file</div>
-                </div>
-                <div class="page2 close">
-                    <div class="pageText">HTML convert complete!</div>
-                </div>
-                <div class="page3 close">
-                    <div class="pageText">Download HTML file</div>
-                </div>
-            </div>
-            <div class="wrapper">
-                <div class="btnContainer">
-                    <div class="page1 btnCon open">
-                        <div id="uploadZipBtn" class="button">File</div>
-                    </div>
-                    <div class="page2 btnCon close">
-                        <div id="" class="button">Done!</div>
-                    </div>
-                    <div class="page3 btnCon close">
-                        <div class="btnMenu">
-                            <div id="copyHtmlBtn" class="button">
-                                <div
-                                    class="btnBg"
-                                    style="background-color: #f1c40f;"
-                                ></div>
-                                <div class="btnImg">Copy</div>
-                            </div>
-                            <div id="downloadHtmlBtn" class="button">
-                                <div
-                                    class="btnBg"
-                                    style="background-color: #3498db;"
-                                ></div>
-                                <div class="btnImg">Download</div>
-                            </div>
-                            <div id="uploadToTistoryBtn" class="button">
-                                <div
-                                    class="btnBg"
-                                    style="background-color: #e67e22;"
-                                ></div>
-                                <div class="btnImg">Tistory</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- <button id="selectNotionBtn">Search</button> -->
+  <head>
+    <meta charset="UTF-8" />
+    <title>Notion2Tistory</title>
+    <link rel="stylesheet" href="_style.css" />
+    <!-- <script defer src="./renderer.js"></script> -->
+  </head>
+  <body>
+    <div class="container">
+      <div id="homeBtn">Home</div>
+      <div class="wrapper">
+        <div id="textContainer"></div>
+      </div>
+      <div class="wrapper">
+        <div id="commentContainer">
+          <span class="comment">Notion2Tistory v0.10.0</span>
         </div>
-    </body>
-    <script></script>
+      </div>
+      <div class="wrapper">
+        <div id="btnContainer">
+          <div id="btnBg"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./temp.js"></script>
 </html>
