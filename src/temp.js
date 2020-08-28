@@ -77,24 +77,62 @@ const changeBtnMenu = btnList => {
 // const BtnList = btnContainer.querySelectorAll(".button");
 // BtnList.forEach((btn) => btn.addEventListener("mouseenter", handleBtnHover));
 
+const createBtn = (text, clickHandler) => {
+    const btn = document.createElement("div");
+    btn.className = "button";
+    btn.innerHTML = "<span>" + text + "</span>";
+    //[ToDo]
+    //👆 edit this...
+    btn.addEventListener("click", clickHandler);
+    return createBtn;
+}
+
+homeBtn.addEventListener("click", () => {
+    MainPage();
+});
+
 const MainPage = () => {
     changeText("Select zip file");
     const fileSelectBtn = document.createElement("div");
     fileSelectBtn.className = "button";
     fileSelectBtn.innerHTML = "<span>file</span>";
     fileSelectBtn.addEventListener("click", () => {
-        handlefileSelect();
+        const convertedPage = handlefileSelect();
+        changeText("HTML convert done!");
+        setTimeout(() => {
+            CheckConvertPage(convertedPage);
+        }, 1000);
     });
     changeBtnMenu([fileSelectBtn]);
 };
 
-const SAPage = () => {
+const CheckConvertPage = (convertedPage) => {
+    changeText(convertedPage.Title);
+    const checkBtn = document.createElement("div");
+    checkBtn.className = "button";
+    checkBtn.innerHTML = "<span>yes</span>";
+    // add no(취소) button
+    checkBtn.addEventListener("click", () => {
+        SAPage(convertedPage);
+    });
+    changeBtnMenu([checkBtn]);
+};
+
+const SAPage = (convertedPage) => {
     changeText("Select Action");
     const downloadBtn = document.createElement("div");
     downloadBtn.className = "button";
     downloadBtn.innerHTML = "<span>Download</span>";
-    downloadBtn.addEventListener("click", () => {});
-    changeBtnMenu([downloadBtn]);
+    downloadBtn.addEventListener("click", () => {
+        handleDownload(convertedPage);
+    });
+    const copyBtn = createBtn("copy", () => {
+        handleCopy(convertedPage);
+    });
+    const uploadBtn = createBtn("tistory", () => {
+        handleUpload(convertedPage);
+    });
+    changeBtnMenu([downloadBtn, copyBtn, uploadBtn]);
 };
 
 MainPage();

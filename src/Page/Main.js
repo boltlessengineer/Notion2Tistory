@@ -3,13 +3,13 @@ const fs = require("fs");
 const { searchFile, readFile } = require("../readFile.js");
 const { convertToPost } = require("../coverter.js");
 
-const handlefileSelect = (NotionPage) => {
+const handlefileSelect = () => {
     const filePath = dialog.showOpenDialogSync({
         properties: ["openFile"],
         filters: [{ name: "ZipFile", extensions: ["zip"] }]
     })[0];
-    NotionPost = convertToPost(readFile(filePath));
-
+    const convertedPage = convertToPost(readFile(filePath));
+    return convertedPage
 };
 
 module.exports = {

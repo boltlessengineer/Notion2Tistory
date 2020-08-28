@@ -33,8 +33,6 @@ class NotionPage {
     */
 }
 
-let DefaultPage = new NotionPage();
-
 function readPage(html) {
     console.log(html);
     const dom = new JSDOM(html, { runscripts: "outside-only" });
@@ -115,14 +113,15 @@ function readPage(html) {
     const notionPage = new NotionPage(notionProps);
 
     console.log("Reading process done.");
-    console.log(notionPage);
+    //console.log(notionPage);
     return notionPage;
 }
 
 function convertPage(html) {
     const notionPage = readPage(html);
     convertHtml(notionPage);
-    console.log(notionPage.content.outerHTML);
+    //console.log(notionPage.content.outerHTML);
+    console.log(notionPage);
 
     return notionPage;
 }
@@ -187,6 +186,7 @@ function getEmbedUrl(url) {
 }
 
 module.exports = {
+    NotionPage,
     readHtml: readPage,
     convertToPost: convertPage
 };
