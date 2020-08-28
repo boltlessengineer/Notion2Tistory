@@ -8,13 +8,10 @@ const { searchFile, readFile } = require("./readFile.js");
 const { convertToPost } = require("./coverter.js");
 const tistory = require("./api/tistory.js");
 
-const homeBtn = document.getElementById("homeBtn");
-const searchFileBtn = document.getElementById("uploadZipBtn");
-const copyHtmlBtn = document.getElementById("copyHtmlBtn");
-const downloadHtmlBtn = document.getElementById("downloadHtmlBtn");
-const uploadToTistoryBtn = document.getElementById("uploadToTistoryBtn");
+const MainPage = require("./Page/Main.js");
+const SAPage = require("./Page/SelectAction.js");
 
-const changeText = (text, option = "down") => {};
+const homeBtn = document.getElementById("homeBtn");
 
 const changePage = pageNum => {
     const page = "page" + pageNum;
@@ -38,31 +35,17 @@ const animate = () => {
 
 let notionPage;
 
-homeBtn.addEventListener("click", () => {
-    notionPage = null;
-    changePage(1);
-});
-
-searchFileBtn.addEventListener("click", async () => {
+const handleFileSelectBtnClick = async () => {
     const filePath = dialog.showOpenDialogSync({
         properties: ["openFile"],
         filters: [{ name: "ZipFile", extensions: ["zip"] }]
     })[0];
     notionPage = convertToPost(readFile(filePath));
-    animate();
     console.log(notionPage);
-});
+    SAPage(handleDownloadBtnClick, handleCopyBtnClick, handleTistoryBtnClick);
+};
 
-copyHtmlBtn.addEventListener("click", async () => {
-    clipboard.writeText(notionPage.content.outerHTML);
-    console.log("clipboard copied!");
-    await dialog.showMessageBox({
-        title: "HTML Copied!",
-        message: "COPIED!"
-    });
-});
-
-downloadHtmlBtn.addEventListener("click", async () => {
+const handleDownloadBtnClick = async () => {
     let saveName = notionPage.Title;
     //특수문자 제거 정규식
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -81,12 +64,28 @@ downloadHtmlBtn.addEventListener("click", async () => {
             console.log("fail");
         }
     });
-});
+};
 
-uploadToTistoryBtn.addEventListener("click", async () => {
+const handleCopyBtnClick = async () => {
+    clipboard.writeText(notionPage.content.outerHTML);
+    console.log("clipboard copied!");
+    await dialog.showMessageBox({
+        title: "HTML Copied!",
+        message: "COPIED!"
+    });
+};
+
+const handleTistoryBtnClick = async () => {
     if (!tistory.user) {
         await tistory.getUser();
     }
     console.log("made user");
     await tistory.send(notionPage);
+};
+
+homeBtn.addEventListener("click", () => {
+    notionPage = null;
+    MainPage(handleFileSelectBtnClick);
 });
+
+MainPage(handleFileSelectBtnClick);
