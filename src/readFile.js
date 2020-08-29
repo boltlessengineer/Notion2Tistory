@@ -13,6 +13,7 @@ function readFile(filePath) {
     const zipfile = new AdmZip(filePath);
     const zipEntries = zipfile.getEntries();
     let content = "";
+    let imageList = [];
     console.log(filePath);
     zipEntries.forEach(zipEntry => {
         console.log(zipEntry.toString());
@@ -22,8 +23,16 @@ function readFile(filePath) {
                 content = zipfile.readAsText(zipEntry, "utf8");
             }
         }
+        else {
+            if (zipEntry.entryName.indexOf("/") !== -1) {
+                const imageName = zipEntry.entryName;
+                const imageBuffer = zipEntry.getData();
+                const imageData = {value: imageBuffer, options: {filename: imageName}};
+                imageList.push(imageData);
+            }
+        }
     });
-    return content;
+    return { content, imageList };
 }
 
 module.exports = {

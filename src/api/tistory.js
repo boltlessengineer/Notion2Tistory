@@ -19,7 +19,6 @@ const urlparams = {
     redirect_uri: "https://boltlessengineer.tistory.com",
     response_type: "token"
 };
-//
 
 const getAccessToken = () => {
     // [ToDo]
@@ -65,6 +64,7 @@ const getAccessToken = () => {
 
 const getBlogName = () => {
     return "boltlessengineer";
+    //[ToDo] 이거 입력받는 창 만들기 (이후엔 목록 긁어와서 선택 가능하게)
 };
 
 const getUser = async () => {
@@ -120,7 +120,8 @@ const findCategory = async categoryName => {
     }
 };
 
-const uploadData = async data => {
+const uploadData = data => {
+    // data : { value: buffer, options: { filename, } }
     const requestUri = "https://www.tistory.com/apis/post/attach";
     const formData = {
         access_token: usr.accessToken,
@@ -128,17 +129,41 @@ const uploadData = async data => {
         blogName: usr.blogName,
         uploadedfile: data
     };
-    request.post({ url: requestUri, formData: formData }, (err, res, body) => {
-        const resBody = JSON.parse(body).tistory;
-        if (resBody.status != 200) {
-            console.log(`Error [${resBody.status}] : ${resBody.error_message}`);
-        } else {
-            console.log(resBody);
-        }
+    return new Promise((resolve, reject) => {
+        request.post(
+            { url: requestUri, formData: formData },
+            (err, res, body) => {
+                const resBody = JSON.parse(body).tistory;
+                if (resBody.status != 200) {
+                    console.log(
+                        `Error [${resBody.status}] : ${resBody.error_message}`
+                    );
+                    reject(resBody);
+                } else {
+                    console.log(resBody);
+                    resolve(resBody);
+                }
+            }
+        );
     });
 };
 
-const uploadImage = async data => {};
+const uploadImage = async data => {
+    const resBody = await uploadData(data);
+    const url = resBody.url;
+    const replacer = getImageReplacer(url);
+    console.log(replacer);
+    return replacer;
+};
+
+const getImageReplacer = url => {
+    const fileId = url.slice(url.lastIndexOf("/") + 1, url.length - 4);
+    const newUrl = `https://t1.daumcdn.net/cfile/tistory/${fileId}?original`;
+    const replacer = `[##_Image|t/cfile@${fileId}|alignCenter|data-origin-width="0" data-origin-height="0" data-ke-mobilestyle="widthContent"|||_##]`;
+
+    console.log(replacer);
+    return replacer;
+};
 
 const uploadPost = async notionPage => {
     const categoryId = await findCategory(notionPage.Category);
@@ -197,5 +222,6 @@ module.exports = {
     send: uploadPost,
     user: usr,
     getUser: getUser,
-    uploadData
+    uploadData,
+    uploadImage
 };

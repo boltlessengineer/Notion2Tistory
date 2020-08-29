@@ -1,6 +1,5 @@
 const { JSDOM } = require("jsdom");
-// const { readFileSync } = require("fs");
-//const http = require("http");
+const tistory = require("./api/tistory.js");
 
 class NotionPage {
     // static defaultPage = JSON.parse(readFileSync("./assets/default.json")).post;
@@ -12,7 +11,7 @@ class NotionPage {
         Tag: ["test1", "test2"],
         Comment: true,
         Password: ""
-    }
+    };
 
     constructor(tempArg) {
         const defaultPage = Object.assign({}, NotionPage.defaultPage);
@@ -46,7 +45,9 @@ function readPage(html) {
     const comment = notiondoc.createElement("div");
     comment.classList.add("n2t_comment");
     comment.innerHTML =
-        '<p>\n</p><p class="block-color-gray"><a href="https://boltlessengineer.tistory.com">Uploaded by Notion2Tistory v0.9</a></p>';
+        '<p>\n</p><p class="block-color-gray"><a href="https://boltlessengineer.tistory.com">Uploaded by Notion2Tistory v0.10</a></p>';
+    //[ToDo]
+    //👆 app.getVersion() 으로 버전 직접 가져와서 합치기
     article.querySelector("div.page-body").appendChild(comment);
 
     const header = notiondoc.querySelector("header");
@@ -55,39 +56,45 @@ function readPage(html) {
 
     let properties = [];
 
-    if(table){
-    const tableList = Array.prototype.slice.call(table.querySelectorAll("tr"));
+    if (table) {
+        const tableList = Array.prototype.slice.call(
+            table.querySelectorAll("tr")
+        );
 
-    properties = tableList.map(tr => {
-        const propName = tr.querySelector("th").textContent;
-        const csplit = Array.prototype.slice.call(tr.classList)[1].split("-");
-        const propType = csplit[csplit.length - 1];
-        let propVal;
-        if (propType === "checkbox") {
-            const checkbox = tr.querySelector("td .checkbox");
-            const boxState = Array.prototype.slice.call(checkbox.classList)[1];
-            if (boxState === "checkbox-on") {
-                propVal = true;
+        properties = tableList.map(tr => {
+            const propName = tr.querySelector("th").textContent;
+            const csplit = Array.prototype.slice
+                .call(tr.classList)[1]
+                .split("-");
+            const propType = csplit[csplit.length - 1];
+            let propVal;
+            if (propType === "checkbox") {
+                const checkbox = tr.querySelector("td .checkbox");
+                const boxState = Array.prototype.slice.call(
+                    checkbox.classList
+                )[1];
+                if (boxState === "checkbox-on") {
+                    propVal = true;
+                } else {
+                    propVal = false;
+                }
+            } else if (propType === "multi_select") {
+                const spans = tr.querySelectorAll("td span");
+                const spanArr = Array.prototype.slice.call(spans);
+                propVal = spanArr.map(span => span.textContent);
+            } else if (propType === "relation") {
+                const tempNodes = tr.querySelector("td a").childNodes;
+                propVal = tempNodes[tempNodes.length - 1].nodeValue;
             } else {
-                propVal = false;
+                propVal = tr.querySelector("td").textContent;
             }
-        } else if (propType === "multi_select") {
-            const spans = tr.querySelectorAll("td span");
-            const spanArr = Array.prototype.slice.call(spans);
-            propVal = spanArr.map(span => span.textContent);
-        } else if (propType === "relation") {
-            const tempNodes = tr.querySelector("td a").childNodes;
-            propVal = tempNodes[tempNodes.length - 1].nodeValue;
-        } else {
-            propVal = tr.querySelector("td").textContent;
-        }
-        const prop = {
-            propName: propName,
-            propType: propType,
-            propVal: propVal
-        };
-        return prop;
-    });
+            const prop = {
+                propName: propName,
+                propType: propType,
+                propVal: propVal
+            };
+            return prop;
+        });
     }
     console.log(properties);
     const tistoryProps = [
@@ -117,9 +124,10 @@ function readPage(html) {
     return notionPage;
 }
 
-function convertPage(html) {
+function convertToPost({ content: html, imageList }) {
     const notionPage = readPage(html);
     convertHtml(notionPage);
+    replaceImage(notionPage, imageList);
     //console.log(notionPage.content.outerHTML);
     console.log(notionPage);
 
@@ -154,8 +162,6 @@ function convertHtml(page) {
         embedBlock.outerHTML = embedHtml;
     });
 
-    //이미지 replacer
-
     return page;
 }
 
@@ -185,8 +191,32 @@ function getEmbedUrl(url) {
     return embedUrl;
 }
 
+async function replaceImage(NotionPage, ImageList) {
+    if (!tistory.user) {
+        await tistory.getUser();
+    }
+    const htmlImageList = NotionPage.content.querySelectorAll("figure.image");
+    const htmlImageArr = Array.prototype.slice.call(htmlImageList);
+    const promises = ImageList.map(async imageData => {
+        const imageName = imageData.options.filename;
+        const htmlImage = htmlImageArr.filter(
+            fig =>
+                decodeURI(fig.querySelector("a").getAttribute("href")) ===
+                imageName
+        )[0];
+        console.log(htmlImage);
+        console.log(imageData);
+        const replacer = await tistory.uploadImage(imageData);
+        htmlImage.innerHTML = replacer;
+        console.log("replaced!");
+    });
+    await Promise.all(promises);
+    console.log(NotionPage.content.outerHTML);
+    console.log("done!");
+}
+
 module.exports = {
     NotionPage,
     readHtml: readPage,
-    convertToPost: convertPage
+    convertToPost
 };

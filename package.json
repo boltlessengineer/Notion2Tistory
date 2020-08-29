@@ -11,33 +11,34 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-
     "build:win64": "electron-builder --win --x64"
   },
   "build": {
-      "productName": "Notion2Tistory",
-      "appId": "com.electron.notion2tistory",
-      "asar": true,
-      "protocols": {
-          "name": "Notion2Tistory",
-          "schemes": ["notion2tistory"]
-      },
-      "win": {
-          "target": [
-              "zip",
-              "nsis"
-          ],
-          "icon": "./assets/icons/win/icon.ico"
-      },
-      "nsis": {
-          "oneClick": false,
-          "allowToChangeInstallationDirectory" :true
-      },
-      "directories": {
-          "buildResources": "./assets/installer/",
-          "output": "./dist/",
-          "app": "."
-      }
+    "productName": "Notion2Tistory",
+    "appId": "com.electron.notion2tistory",
+    "asar": true,
+    "protocols": {
+      "name": "Notion2Tistory",
+      "schemes": [
+        "notion2tistory"
+      ]
+    },
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ],
+      "icon": "./assets/icons/win/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "directories": {
+      "buildResources": "./assets/installer/",
+      "output": "./dist/",
+      "app": "."
+    }
   },
   "keywords": [],
   "author": {
