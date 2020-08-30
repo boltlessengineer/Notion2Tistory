@@ -5,10 +5,11 @@ html {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif;
-  background: #2c3e50;
+  background: #242526;
   margin: 0;
   padding: 0;
   height: 100vh;
+  overflow: hidden;
 }
 
 .container {
@@ -73,11 +74,11 @@ body {
 
 #btnContainer {
   display: flex;
-  background: #ecf0f1;
+  background: #3A3B3C;
   height: 70px;
   min-width: 70px;
   transition: width 2s linear;
-  border: solid 4px;
+  border: solid 4px #3A3B3C;
   border-radius: 40px;
 }
 
@@ -100,7 +101,6 @@ body {
   height: 70px;
   border-radius: 50%;
   transition: 0.3s;
-  color: #2c3e50;
   cursor: pointer;
   z-index: 1;
 }
@@ -121,6 +121,23 @@ body {
   z-index: 0;
   margin-left: 10px;
   /* transform: translateX(70px); */
+}
+
+.textInput {
+    display: flex;
+    border-radius: 70px;
+    background-color: #243536;
+}
+
+.tInput>input {
+    border: none;
+    background: none;
+    outline: none;
+    float: left;
+    padding: 10px 0px 10px 30px;
+    font-size: 24px;
+    height: 40px;
+    width: 240px;
 }
 
 .appearVertical {

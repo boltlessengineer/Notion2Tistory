@@ -97,6 +97,25 @@ const createBtn = (text, comment, clickHandler) => {
     return btn;
 };
 
+const createTextInput = (placeHolder, clickHandler) => {
+    const textInput = document.createElement("div");
+    const inputInner = document.createElement("div");
+    const inputTag = document.createElement("input");
+    const inputCheck = createBtn("확인", "확인", () => {
+        clickHandler(inputTag.value);
+    });
+    textInput.className = "textInput";
+    inputInner.className = "tInput";
+    inputTag.setAttribute("type", "text");
+    inputTag.setAttribute("placeholder", placeHolder);
+    inputTag.setAttribute("autofocus", "");
+
+    textInput.appendChild(inputInner);
+    textInput.appendChild(inputCheck);
+    inputInner.appendChild(inputTag);
+    return textInput;
+};
+
 homeBtn.addEventListener("click", () => {
     MainPage();
 });
@@ -111,7 +130,7 @@ const MainPage = () => {
             changeText("HTML convert done!");
             setTimeout(() => {
                 CheckConvertPage(convertedPage);
-            }, 1000);
+            }, 2000);
         }
     );
     changeBtnMenu([fileSelectBtn]);
@@ -142,9 +161,38 @@ const SAPage = ({ notionPage, imageList }) => {
         handleCopy(notionPage);
     });
     const uploadBtn = createBtn("tistory", "티스토리에 포스트로 업로드", () => {
-        handleUpload({ notionPage, imageList });
+        TistoryLoginPage({ notionPage, imageList });
     });
     changeBtnMenu([downloadBtn, copyBtn, uploadBtn]);
+};
+
+const TistoryLoginPage = ({ notionPage, imageList }) => {
+    changeText("티스토리에 로그인해주세요");
+    // 얘도 BlogNamePage 처럼 만들면 뒤로가기 구현 ㅆㄱㄴ
+    // 핵심은 리턴값이 있다는거. 그러면 await으로 작업 완료를 기다리면 되는거니까
+    const goBackBtn = createBtn("back", "뒤로가기", () => {
+        SAPage({ notionPage, imageList });
+    });
+    const loginBtn = createBtn("login", "로그인하기", async () => {
+        const blogName = await BlogNamePage();
+        console.log(blogName);
+        SAPage({ notionPage, imageList });
+        //handleUpload({ notionPage, imageList });
+    });
+    changeBtnMenu([goBackBtn, loginBtn]);
+};
+
+const BlogNamePage = () => {
+    changeText("블로그 이름을 입력해주세요");
+    return new Promise((resolve, reject) => {
+        const goBackBtn = createBtn("back", "뒤로가기", () => {
+            reject("go back");
+        });
+        const txtInput = createTextInput("블로그명 입력", value => {
+            resolve(value);
+        });
+        changeBtnMenu([goBackBtn, txtInput]);
+    });
 };
 
 MainPage();
