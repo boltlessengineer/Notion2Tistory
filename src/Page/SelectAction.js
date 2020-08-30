@@ -5,6 +5,7 @@ const {
     clipboard
 } = require("electron");
 const tistory = require("../api/tistory.js");
+const { replaceImage } = require("../converter.js");
 
 const handleDownload = async notionPage => {
     let saveName = notionPage.Title;
@@ -36,12 +37,13 @@ const handleCopy = async notionPage => {
     });
 };
 
-const handleUpload = async notionPage => {
+const handleUpload = async ({notionPage, imageList}) => {
     if (!tistory.user) {
         await tistory.getUser();
     }
-    console.log("made user");
+    const convertedPage = await replaceImage(notionPage, imageList);
     await tistory.send(notionPage);
+    console.log("upload done!");
 };
 
 module.exports = {

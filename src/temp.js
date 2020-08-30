@@ -41,12 +41,14 @@ const changeText = text => {
 
 const changeComment = (comment, direction) => {
     const prevComment = commentContainer.querySelector(".comment");
-    const newComment = document.createElement("span");
-    newComment.className = "comment";
-    newComment.innerText = comment;
-    disappear(prevComment, "Horizontal");
-    commentContainer.appendChild(newComment);
-    appear(newComment, "Horizontal");
+    if (prevComment.innerHTML !== comment) {
+        const newComment = document.createElement("span");
+        newComment.className = "comment";
+        newComment.innerText = comment;
+        disappear(prevComment, "Horizontal");
+        commentContainer.appendChild(newComment);
+        appear(newComment, "Horizontal");
+    }
 };
 
 const changeBtnMenu = btnList => {
@@ -77,15 +79,23 @@ const changeBtnMenu = btnList => {
 // const BtnList = btnContainer.querySelectorAll(".button");
 // BtnList.forEach((btn) => btn.addEventListener("mouseenter", handleBtnHover));
 
-const createBtn = (text, clickHandler) => {
+const createBtn = (text, comment, clickHandler) => {
     const btn = document.createElement("div");
     btn.className = "button";
     btn.innerHTML = "<span>" + text + "</span>";
-    //[ToDo]
-    //👆 edit this...
     btn.addEventListener("click", clickHandler);
+    var timeout;
+    btn.addEventListener("mouseover", () => {
+        timeout = setTimeout(() => {
+            //console.log(comment);
+            changeComment(comment);
+        }, 600);
+    });
+    btn.addEventListener("mouseout", () => {
+        clearTimeout(timeout);
+    });
     return btn;
-}
+};
 
 homeBtn.addEventListener("click", () => {
     MainPage();
@@ -93,44 +103,46 @@ homeBtn.addEventListener("click", () => {
 
 const MainPage = () => {
     changeText("Select zip file");
-    const fileSelectBtn = document.createElement("div");
-    fileSelectBtn.className = "button";
-    fileSelectBtn.innerHTML = "<span>file</span>";
-    fileSelectBtn.addEventListener("click", () => {
-        const convertedPage = handlefileSelect();
-        changeText("HTML convert done!");
-        setTimeout(() => {
-            CheckConvertPage(convertedPage);
-        }, 1000);
-    });
+    const fileSelectBtn = createBtn(
+        "file",
+        "노션에서 export한 zip 파일 선택",
+        async () => {
+            const convertedPage = await handlefileSelect();
+            changeText("HTML convert done!");
+            setTimeout(() => {
+                CheckConvertPage(convertedPage);
+            }, 1000);
+        }
+    );
     changeBtnMenu([fileSelectBtn]);
 };
 
-const CheckConvertPage = (convertedPage) => {
-    changeText(convertedPage.Title);
-    const checkBtn = document.createElement("div");
-    checkBtn.className = "button";
-    checkBtn.innerHTML = "<span>yes</span>";
-    // add no(취소) button
-    checkBtn.addEventListener("click", () => {
+const CheckConvertPage = convertedPage => {
+    console.log(convertedPage);
+    changeText(convertedPage.notionPage.Title);
+    const checkBtn = createBtn("yes", "해당 페이지를 변환합니다.", () => {
         SAPage(convertedPage);
     });
-    changeBtnMenu([checkBtn]);
+    const cancelBtn = createBtn("cancel", "메인으로 돌아가기", () => {
+        MainPage();
+    });
+    changeBtnMenu([checkBtn, cancelBtn]);
 };
 
-const SAPage = (convertedPage) => {
+const SAPage = ({ notionPage, imageList }) => {
     changeText("Select Action");
-    const downloadBtn = document.createElement("div");
-    downloadBtn.className = "button";
-    downloadBtn.innerHTML = "<span>Download</span>";
-    downloadBtn.addEventListener("click", () => {
-        handleDownload(convertedPage);
+    const downloadBtn = createBtn(
+        "download",
+        "변환된 HTML 파일 다운로드",
+        () => {
+            handleDownload(notionPage);
+        }
+    );
+    const copyBtn = createBtn("copy", "변환된 HTML 복사", () => {
+        handleCopy(notionPage);
     });
-    const copyBtn = createBtn("copy", () => {
-        handleCopy(convertedPage);
-    });
-    const uploadBtn = createBtn("tistory", () => {
-        handleUpload(convertedPage);
+    const uploadBtn = createBtn("tistory", "티스토리에 포스트로 업로드", () => {
+        handleUpload({ notionPage, imageList });
     });
     changeBtnMenu([downloadBtn, copyBtn, uploadBtn]);
 };

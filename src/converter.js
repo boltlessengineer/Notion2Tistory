@@ -127,11 +127,8 @@ function readPage(html) {
 function convertToPost({ content: html, imageList }) {
     const notionPage = readPage(html);
     convertHtml(notionPage);
-    replaceImage(notionPage, imageList);
-    //console.log(notionPage.content.outerHTML);
     console.log(notionPage);
-
-    return notionPage;
+    return { notionPage, imageList };
 }
 
 function convertHtml(page) {
@@ -197,7 +194,7 @@ async function replaceImage(NotionPage, ImageList) {
     }
     const htmlImageList = NotionPage.content.querySelectorAll("figure.image");
     const htmlImageArr = Array.prototype.slice.call(htmlImageList);
-    const promises = ImageList.map(async imageData => {
+    const promises = ImageList.map(async (imageData, index) => {
         const imageName = imageData.options.filename;
         const htmlImage = htmlImageArr.filter(
             fig =>
@@ -206,9 +203,10 @@ async function replaceImage(NotionPage, ImageList) {
         )[0];
         console.log(htmlImage);
         console.log(imageData);
-        const replacer = await tistory.uploadImage(imageData);
-        htmlImage.innerHTML = replacer;
-        console.log("replaced!");
+        const { replacer, url } = await tistory.uploadImage(imageData);
+        //htmlImage.innerHTML = replacer;
+        htmlImage.querySelector("a").setAttribute("href", url);
+        htmlImage.querySelector("img").setAttribute("src", url);
     });
     await Promise.all(promises);
     console.log(NotionPage.content.outerHTML);
@@ -218,5 +216,6 @@ async function replaceImage(NotionPage, ImageList) {
 module.exports = {
     NotionPage,
     readHtml: readPage,
-    convertToPost
+    convertToPost,
+    replaceImage
 };

@@ -152,7 +152,6 @@ const uploadImage = async data => {
     const resBody = await uploadData(data);
     const url = resBody.url;
     const replacer = getImageReplacer(url);
-    console.log(replacer);
     return replacer;
 };
 
@@ -161,8 +160,7 @@ const getImageReplacer = url => {
     const newUrl = `https://t1.daumcdn.net/cfile/tistory/${fileId}?original`;
     const replacer = `[##_Image|t/cfile@${fileId}|alignCenter|data-origin-width="0" data-origin-height="0" data-ke-mobilestyle="widthContent"|||_##]`;
 
-    console.log(replacer);
-    return replacer;
+    return { replacer, url: newUrl };
 };
 
 const uploadPost = async notionPage => {
