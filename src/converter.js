@@ -2,7 +2,6 @@ const { JSDOM } = require("jsdom");
 const tistory = require("./api/tistory.js");
 
 class NotionPage {
-    // static defaultPage = JSON.parse(readFileSync("./assets/default.json")).post;
     static defaultPage = {
         Title: "Notion2Tistory Post",
         Visibility: "Private",
