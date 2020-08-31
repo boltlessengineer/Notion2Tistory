@@ -51,7 +51,9 @@ const changeComment = (comment, direction) => {
         //disappear(prevComment, "Horizontal");
         //[ToDo]
         //👆 fix animation
-        prevComment.remove();
+        if (prevComment) {
+            prevComment.remove();
+        }
         commentContainer.appendChild(newComment);
         //appear(newComment, "Horizontal");
         //[ToDo]
@@ -65,9 +67,16 @@ const changeBtnMenu = btnList => {
     newMenu.className = "btnMenu";
     btnList.map(btn => newMenu.append(btn));
     // newMenu.innerHTML = btnList;
-    disappear(prevMenu, "BtnHorizontal");
+    //disappear(prevMenu, "BtnHorizontal");
+    //[ToDo]
+    //👆 fix animation
+    if (prevMenu) {
+        prevMenu.remove();
+    }
     btnContainer.appendChild(newMenu);
-    appear(newMenu, "BtnHorizontal");
+    //appear(newMenu, "BtnHorizontal");
+    //[ToDo]
+    //👆 fix animation
     btnBg.style.marginLeft = "0px";
     btnBg.style.opacity = "0";
 };
@@ -97,7 +106,7 @@ const createBtn = (text, comment, clickHandler) => {
         timeout = setTimeout(() => {
             //console.log(comment);
             changeComment(comment);
-        }, 600);
+        }, 400);
     });
     btn.addEventListener("mouseout", () => {
         clearTimeout(timeout);
@@ -135,19 +144,16 @@ const MainPage = () => {
         "노션에서 export한 zip 파일 선택",
         async () => {
             const convertedPage = await handlefileSelect();
-            changeText("HTML convert done!");
-            setTimeout(() => {
-                CheckConvertPage(convertedPage);
-            }, 2000);
+            CheckConvertPage(convertedPage);
         }
     );
     changeBtnMenu([fileSelectBtn]);
 };
 
 const CheckConvertPage = convertedPage => {
-    console.log(convertedPage);
     changeText(convertedPage.notionPage.Title);
-    const checkBtn = createBtn("yes", "해당 페이지를 변환합니다.", () => {
+    changeComment("이 페이지로 계속하시겠습니까?");
+    const checkBtn = createBtn("yes", "이 페이지로 계속", () => {
         SAPage(convertedPage);
     });
     const cancelBtn = createBtn("cancel", "메인으로 돌아가기", () => {
@@ -179,10 +185,7 @@ const SAPage = ({ notionPage, imageList }, comment = "") => {
             }
             const postUrl = handleUpload({ notionPage, imageList });
             console.log(postUrl);
-            SAPage(
-                { notionPage, imageList },
-                `<a href="${postUrl}">${postUrl}</a>`
-            );
+            SAPage({ notionPage, imageList });
         }
     );
     changeBtnMenu([downloadBtn, copyBtn, uploadBtn]);
