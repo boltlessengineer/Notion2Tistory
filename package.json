@@ -1,7 +1,7 @@
 {
     "name": "notion2tistory",
     "productName": "Notion2Tistory",
-    "version": "0.10.0",
+    "version": "0.10.1",
     "description": "Notion to Tistory. Converts notion html file to upload to Tistory",
     "main": "src/index.js",
     "scripts": {
@@ -32,7 +32,8 @@
         },
         "nsis": {
             "oneClick": false,
-            "allowToChangeInstallationDirectory": true
+            "allowToChangeInstallationDirectory": true,
+            "shortcutName": "Notion2Tistory"
         },
         "directories": {
             "buildResources": "./assets/installer/",

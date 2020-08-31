@@ -48,5 +48,6 @@
 
 ~~연락수단을 나타내는 "Contact"를 뭐라고 번역해야할지 모르겠다~~
 
+[<img height="32" width="32" src="https://unpkg.com/simple-icons@v3/icons/gmail.svg" />](mailto:boltlessengineer@gmail.com "메일 보내기")
 [<img height="32" widht="32" src="assets\images\svg\tistory_fill_black.svg" />](https://boltlessengineer.tistory.com "티스토리 블로그")
 [<img height="32" width="32" src="https://unpkg.com/simple-icons@v3/icons/github.svg" />](https://github.com/boltlessengineer "GitHub 프로필")
