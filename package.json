@@ -1,90 +1,90 @@
 {
-  "name": "notion2tistory",
-  "productName": "Notion2Tistory",
-  "version": "0.9.3",
-  "description": "Notion to Tistory. Converts notion html file to upload to Tistory",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "electron-forge start",
-    "clean": "rm -rf dist",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\"",
-    "build:win64": "electron-builder --win --x64"
-  },
-  "build": {
+    "name": "notion2tistory",
     "productName": "Notion2Tistory",
-    "appId": "com.electron.notion2tistory",
-    "asar": true,
-    "protocols": {
-      "name": "Notion2Tistory",
-      "schemes": [
-        "notion2tistory"
-      ]
+    "version": "0.10.0",
+    "description": "Notion to Tistory. Converts notion html file to upload to Tistory",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "electron-forge start",
+        "clean": "rm -rf dist",
+        "package": "electron-forge package",
+        "make": "electron-forge make",
+        "publish": "electron-forge publish",
+        "lint": "echo \"No linting configured\"",
+        "build:win64": "electron-builder --win --x64"
     },
-    "win": {
-      "target": [
-        "zip",
-        "nsis"
-      ],
-      "icon": "./assets/icons/win/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    },
-    "directories": {
-      "buildResources": "./assets/installer/",
-      "output": "./dist/",
-      "app": "."
-    }
-  },
-  "keywords": [],
-  "author": {
-    "name": "boltlessengineer",
-    "email": "boltlessengineer@gmail.com"
-  },
-  "license": "MIT",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "notion2tistory"
-          }
+    "build": {
+        "productName": "Notion2Tistory",
+        "appId": "com.electron.notion2tistory",
+        "asar": true,
+        "protocols": {
+            "name": "Notion2Tistory",
+            "schemes": [
+                "notion2tistory"
+            ]
         },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
+        "win": {
+            "target": [
+                "zip",
+                "nsis"
+            ],
+            "icon": "./assets/icons/win/icon.ico"
         },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
         },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
+        "directories": {
+            "buildResources": "./assets/installer/",
+            "output": "./dist/",
+            "app": "."
         }
-      ]
+    },
+    "keywords": [],
+    "author": {
+        "name": "boltlessengineer",
+        "email": "boltlessengineer@gmail.com"
+    },
+    "license": "MIT",
+    "config": {
+        "forge": {
+            "packagerConfig": {},
+            "makers": [
+                {
+                    "name": "@electron-forge/maker-squirrel",
+                    "config": {
+                        "name": "notion2tistory"
+                    }
+                },
+                {
+                    "name": "@electron-forge/maker-zip",
+                    "platforms": [
+                        "darwin"
+                    ]
+                },
+                {
+                    "name": "@electron-forge/maker-deb",
+                    "config": {}
+                },
+                {
+                    "name": "@electron-forge/maker-rpm",
+                    "config": {}
+                }
+            ]
+        }
+    },
+    "dependencies": {
+        "adm-zip": "^0.4.16",
+        "electron-squirrel-startup": "^1.0.0",
+        "jsdom": "^16.4.0"
+    },
+    "devDependencies": {
+        "@electron-forge/cli": "6.0.0-beta.52",
+        "@electron-forge/maker-deb": "6.0.0-beta.52",
+        "@electron-forge/maker-rpm": "6.0.0-beta.52",
+        "@electron-forge/maker-squirrel": "6.0.0-beta.52",
+        "@electron-forge/maker-zip": "6.0.0-beta.52",
+        "electron": "9.2.1",
+        "electron-builder": "^22.8.0"
     }
-  },
-  "dependencies": {
-    "adm-zip": "^0.4.16",
-    "electron-squirrel-startup": "^1.0.0",
-    "jsdom": "^16.4.0"
-  },
-  "devDependencies": {
-    "@electron-forge/cli": "6.0.0-beta.52",
-    "@electron-forge/maker-deb": "6.0.0-beta.52",
-    "@electron-forge/maker-rpm": "6.0.0-beta.52",
-    "@electron-forge/maker-squirrel": "6.0.0-beta.52",
-    "@electron-forge/maker-zip": "6.0.0-beta.52",
-    "electron": "9.2.1",
-    "electron-builder": "^22.8.0"
-  }
 }

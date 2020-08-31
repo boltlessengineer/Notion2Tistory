@@ -3,7 +3,7 @@ const AdmZip = require("adm-zip");
 const searchFile = () => {
     const promise = dialog.showOpenDialog({
         properties: ["openFile"],
-        filters: [{ name: "ZipFile", extensions: ["zip"] }]
+        filters: [{ name: "ZipFile", extensions: ["zip"] }],
     });
 
     promise.then(readFile);
@@ -15,8 +15,7 @@ function readFile(filePath) {
     let content = "";
     let imageList = [];
     console.log(filePath);
-    zipEntries.forEach(zipEntry => {
-        console.log(zipEntry.toString());
+    zipEntries.forEach((zipEntry) => {
         if (zipEntry.entryName === zipEntry.name) {
             if (zipEntry.name.indexOf(".html") !== -1) {
                 console.log(zipEntry.name + " is main page html file!");
@@ -30,7 +29,7 @@ function readFile(filePath) {
                 const imageData = {
                     entryName: imageEntry,
                     value: imageBuffer,
-                    options: { filename: imageName }
+                    options: { filename: imageName },
                 };
                 imageList.push(imageData);
             }
@@ -41,5 +40,5 @@ function readFile(filePath) {
 
 module.exports = {
     searchFile: searchFile,
-    readFile: readFile
+    readFile: readFile,
 };
