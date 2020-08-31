@@ -33,7 +33,6 @@ class NotionPage {
 }
 
 function readPage(html) {
-    console.log(html);
     const dom = new JSDOM(html, { runscripts: "outside-only" });
     const { document: notiondoc } = dom.window;
 
@@ -188,14 +187,12 @@ function getEmbedUrl(url) {
     return embedUrl;
 }
 
-async function replaceImage(NotionPage, ImageList) {
-    if (!tistory.user) {
-        await tistory.getUser();
-    }
+async function replaceImage(apiClient, NotionPage, ImageList) {
     const htmlImageList = NotionPage.content.querySelectorAll("figure.image");
     const htmlImageArr = Array.prototype.slice.call(htmlImageList);
+    console.log(htmlImageArr);
     const promises = ImageList.map(async (imageData, index) => {
-        const imageName = imageData.options.filename;
+        const imageName = imageData.entryName;
         const htmlImage = htmlImageArr.filter(
             fig =>
                 decodeURI(fig.querySelector("a").getAttribute("href")) ===
@@ -203,7 +200,7 @@ async function replaceImage(NotionPage, ImageList) {
         )[0];
         console.log(htmlImage);
         console.log(imageData);
-        const { replacer, url } = await tistory.uploadImage(imageData);
+        const { replacer, url } = await tistory.uploadImage(apiClient, imageData);
         //htmlImage.innerHTML = replacer;
         htmlImage.querySelector("a").setAttribute("href", url);
         htmlImage.querySelector("img").setAttribute("src", url);

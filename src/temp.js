@@ -2,7 +2,10 @@ const { handlefileSelect } = require("./Page/Main.js");
 const {
     handleDownload,
     handleCopy,
-    handleUpload
+    handleUpload,
+    handleLogin,
+    handleBlogName,
+    isTistoryUser
 } = require("./Page/SelectAction.js");
 
 const textContainer = document.getElementById("textContainer");
@@ -45,9 +48,14 @@ const changeComment = (comment, direction) => {
         const newComment = document.createElement("span");
         newComment.className = "comment";
         newComment.innerText = comment;
-        disappear(prevComment, "Horizontal");
+        //disappear(prevComment, "Horizontal");
+        //[ToDo]
+        //👆 fix animation
+        prevComment.remove();
         commentContainer.appendChild(newComment);
-        appear(newComment, "Horizontal");
+        //appear(newComment, "Horizontal");
+        //[ToDo]
+        //👆 fix animation
     }
 };
 
@@ -148,8 +156,9 @@ const CheckConvertPage = convertedPage => {
     changeBtnMenu([checkBtn, cancelBtn]);
 };
 
-const SAPage = ({ notionPage, imageList }) => {
+const SAPage = ({ notionPage, imageList }, comment = "") => {
     changeText("Select Action");
+    changeComment(comment);
     const downloadBtn = createBtn(
         "download",
         "변환된 HTML 파일 다운로드",
@@ -160,26 +169,39 @@ const SAPage = ({ notionPage, imageList }) => {
     const copyBtn = createBtn("copy", "변환된 HTML 복사", () => {
         handleCopy(notionPage);
     });
-    const uploadBtn = createBtn("tistory", "티스토리에 포스트로 업로드", () => {
-        TistoryLoginPage({ notionPage, imageList });
-    });
+    const uploadBtn = createBtn(
+        "tistory",
+        "티스토리에 포스트로 업로드",
+        async () => {
+            console.log(isTistoryUser());
+            if (!isTistoryUser()) {
+                await TistoryLoginPage();
+            }
+            const postUrl = handleUpload({ notionPage, imageList });
+            console.log(postUrl);
+            SAPage(
+                { notionPage, imageList },
+                `<a href="${postUrl}">${postUrl}</a>`
+            );
+        }
+    );
     changeBtnMenu([downloadBtn, copyBtn, uploadBtn]);
 };
 
-const TistoryLoginPage = ({ notionPage, imageList }) => {
+const TistoryLoginPage = () => {
     changeText("티스토리에 로그인해주세요");
-    // 얘도 BlogNamePage 처럼 만들면 뒤로가기 구현 ㅆㄱㄴ
-    // 핵심은 리턴값이 있다는거. 그러면 await으로 작업 완료를 기다리면 되는거니까
-    const goBackBtn = createBtn("back", "뒤로가기", () => {
-        SAPage({ notionPage, imageList });
+    return new Promise((resolve, reject) => {
+        const goBackBtn = createBtn("back", "뒤로가기", () => {
+            reject("go back");
+        });
+        const loginBtn = createBtn("login", "로그인하기", async () => {
+            await handleLogin();
+            const blogName = await BlogNamePage();
+            handleBlogName(blogName);
+            resolve();
+        });
+        changeBtnMenu([goBackBtn, loginBtn]);
     });
-    const loginBtn = createBtn("login", "로그인하기", async () => {
-        const blogName = await BlogNamePage();
-        console.log(blogName);
-        SAPage({ notionPage, imageList });
-        //handleUpload({ notionPage, imageList });
-    });
-    changeBtnMenu([goBackBtn, loginBtn]);
 };
 
 const BlogNamePage = () => {

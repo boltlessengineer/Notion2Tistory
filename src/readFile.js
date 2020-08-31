@@ -22,12 +22,16 @@ function readFile(filePath) {
                 console.log(zipEntry.name + " is main page html file!");
                 content = zipfile.readAsText(zipEntry, "utf8");
             }
-        }
-        else {
+        } else {
             if (zipEntry.entryName.indexOf("/") !== -1) {
-                const imageName = zipEntry.entryName;
+                const imageName = zipEntry.name;
+                const imageEntry = zipEntry.entryName;
                 const imageBuffer = zipEntry.getData();
-                const imageData = {value: imageBuffer, options: {filename: imageName}};
+                const imageData = {
+                    entryName: imageEntry,
+                    value: imageBuffer,
+                    options: { filename: imageName }
+                };
                 imageList.push(imageData);
             }
         }
