@@ -8,7 +8,7 @@ const TISTORY_OAUTH =
 const urlparams = {
     client_id: "ff97cbe9c5811dbf23fc9f9622f3d675",
     redirect_uri: "https://boltlessengineer.tistory.com",
-    response_type: "token"
+    response_type: "token",
 };
 
 const getAccessToken = () => {
@@ -20,10 +20,10 @@ const getAccessToken = () => {
             width: 1000,
             height: 800,
             show: false,
-            "node-integration": false
+            "node-integration": false,
         });
 
-        const handleNavigation = url => {
+        const handleNavigation = (url) => {
             const raw_token = /\#access_token=([^&]*)/.exec(url);
             const accessToken =
                 raw_token && raw_token.length > 1 ? raw_token[1] : null;
@@ -54,11 +54,10 @@ const getAccessToken = () => {
 };
 
 const findCategory = async (usr, categoryName) => {
-    const categoryId = "";
     const query = {
         access_token: usr.accessToken,
         output: "json",
-        blogName: usr.blogName
+        blogName: usr.blogName,
     };
     console.log(query);
     const myRequest = () => {
@@ -67,7 +66,7 @@ const findCategory = async (usr, categoryName) => {
                 {
                     uri: "https://www.tistory.com/apis/category/list",
                     method: "GET",
-                    qs: query
+                    qs: query,
                 },
                 (err, response, body) => {
                     console.log(err);
@@ -89,12 +88,12 @@ const findCategory = async (usr, categoryName) => {
     console.log(categoryList);
     if (categoryList) {
         const foundList = categoryList.filter(
-            category => category.name === categoryName
+            (category) => category.name === categoryName
         );
         if (foundList.length > 0) {
             return foundList[0].id.toString();
         } else {
-            return "";
+            return "0";
         }
     }
 };
@@ -108,7 +107,7 @@ const uploadData = (usr, data) => {
         access_token: usr.accessToken,
         output: "json",
         blogName: usr.blogName,
-        uploadedfile: data
+        uploadedfile: data,
     };
     return new Promise((resolve, reject) => {
         request.post(
@@ -137,7 +136,7 @@ const uploadImage = async (usr, data) => {
     return replacer;
 };
 
-const getImageReplacer = url => {
+const getImageReplacer = (url) => {
     const fileId = url.slice(url.lastIndexOf("/") + 1, url.length - 4);
     const newUrl = `https://t1.daumcdn.net/cfile/tistory/${fileId}?original`;
     const replacer = `[##_Image|t/cfile@${fileId}|alignCenter|data-origin-width="0" data-origin-height="0" data-ke-mobilestyle="widthContent"|||_##]`;
@@ -145,14 +144,21 @@ const getImageReplacer = url => {
     return { replacer, url: newUrl };
 };
 
+const dateToTimestamp = (date) => {
+    if (!date) {
+        return null;
+    }
+    console.log(`Publish Date : ${date}`);
+    const timestamp = Date.parse(date.substring(1)) / 1000;
+    console.log(timestamp);
+    return timestamp.toString();
+};
+
 const uploadPost = async (usr, notionPage) => {
     const categoryId = await findCategory(usr, notionPage.Category);
     console.log(categoryId);
     console.log("start");
-    console.log(`Publish Date : ${notionPage.PublishDate}`);
-    const publishTimestamp =
-        Date.parse(notionPage.PublishDate.substring(1)) / 1000;
-    console.log(publishTimestamp);
+    const publishTimestamp = dateToTimestamp(notionPage.PublishDate);
     const vis = notionPage.Visibility.toLowerCase();
     let visibility = "0"; //private
     switch (vis) {
@@ -164,7 +170,7 @@ const uploadPost = async (usr, notionPage) => {
             break;
     }
 
-    const form = {
+    let form = {
         access_token: usr.accessToken,
         output: "json",
         blogName: usr.blogName,
@@ -172,11 +178,14 @@ const uploadPost = async (usr, notionPage) => {
         content: notionPage.content.outerHTML,
         visibility: visibility,
         category: categoryId,
-        published: publishTimestamp.toString(),
         tag: notionPage.Tag.join(","),
         acceptComment: notionPage.Comment ? "1" : "0",
-        password: notionPage.Password
+        password: notionPage.Password,
     };
+
+    if (publishTimestamp) {
+        form.published = publishTimestamp;
+    }
     console.log(form);
 
     return new Promise((resolve, reject) => {
@@ -184,7 +193,7 @@ const uploadPost = async (usr, notionPage) => {
             {
                 uri: "https://www.tistory.com/apis/post/write",
                 method: "POST",
-                form: form
+                form: form,
             },
             (err, res, body) => {
                 const resBody = JSON.parse(body).tistory;
@@ -207,5 +216,5 @@ module.exports = {
     getAccessToken,
     uploadPost,
     uploadData,
-    uploadImage
+    uploadImage,
 };
