@@ -6,22 +6,157 @@
         <link rel="stylesheet" href="_style.css" />
     </head>
     <body>
-        <div class="container">
-            <div id="homeBtn">Home</div>
+        <div class="container mainPage active">
             <div class="wrapper">
-                <div id="textContainer" onclick="test()"></div>
-            </div>
-            <div class="wrapper">
-                <div id="commentContainer">
-                    <span class="comment">Notion2Tistory v0.10.0</span>
+                <div class="textContainer" default="zip 파일을 선택해주세요">
+                    <span class="pageText">zip 파일을 선택해주세요</span>
                 </div>
             </div>
             <div class="wrapper">
-                <div id="btnContainer">
+                <div class="commentContainer">
+                    <span class="comment"></span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="btnContainer">
+                    <div class="btnMenu">
+                        <div id="fileSelectBtn" class="button">
+                            <span>file</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                    </div>
                     <div id="btnBg"></div>
                 </div>
             </div>
         </div>
+        <div class="container checkPage">
+            <div class="wrapper">
+                <div class="textContainer"></div>
+            </div>
+            <div class="wrapper">
+                <div
+                    class="commentContainer"
+                    default="이 페이지로 계속하시겠습니까?"
+                >
+                    <span class="comment">이 페이지로 계속하시겠습니까?</span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="btnContainer">
+                    <div class="btnMenu">
+                        <div id="cancelBtn" class="button">
+                            <span>No</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                        <div id="checkBtn" class="button">
+                            <span>Yes</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container SAPage">
+            <div class="wrapper">
+                <div class="textContainer" default="작업을 선택해주세요">
+                    <span class="pageText">작업을 선택해주세요</span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="commentContainer" default="HTML 변환 완료">
+                    <span class="comment">HTML 변환 완료</span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="btnContainer">
+                    <div class="btnMenu">
+                        <div id="goHomeBtn" class="button">
+                            <span>Home</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                        <div id="copyBtn" class="button">
+                            <span>Copy</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                        <div id="downloadBtn" class="button">
+                            <span>Download</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                        <div id="uploadBtn" class="button">
+                            <span>Tistory</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container loginPage">
+            <div class="wrapper">
+                <div class="textContainer" default="티스토리에 로그인해주세요">
+                    <span class="pageText">티스토리에 로그인해주세요</span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div
+                    class="commentContainer"
+                    default="액세스 토큰을 받아옵니다"
+                >
+                    <span class="comment">액세스 토큰을 받아옵니다</span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="btnContainer">
+                    <div class="btnMenu">
+                        <div class="button goBackBtn">
+                            <span>back</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                        <div id="loginBtn" class="button">
+                            <span>login</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container BNInputPage">
+            <div class="wrapper">
+                <div class="textContainer" defaylt="블로그 이름을 입력해주세요">
+                    <span class="pageText">블로그 이름을 입력해주세요</span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div
+                    class="commentContainer"
+                    default="xxx.tistory.com의 “xxx” 부분"
+                >
+                    <span class="comment">xxx.tistory.com의 “xxx” 부분</span>
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="btnContainer">
+                    <div class="btnMenu">
+                        <div class="button goBackBtn">
+                            <span>back</span>
+                            <div class="buttonBg"></div>
+                        </div>
+                        <div class="textInput">
+                            <div class="tInput">
+                                <input
+                                    type="text"
+                                    id="txtInput"
+                                    placehoder="블로그명 입력"
+                                    autofocus
+                                />
+                            </div>
+                            <div id="inputBtn" class="button">
+                                <span>✅</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
-    <script src="./temp.js"></script>
+    <script src="./renderer.js"></script>
 </html>
