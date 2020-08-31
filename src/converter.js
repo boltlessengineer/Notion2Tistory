@@ -8,9 +8,9 @@ class NotionPage {
         Visibility: "Private",
         Category: "",
         Slogan: "",
-        Tag: ["test1", "test2"],
+        Tag: [],
         Comment: true,
-        Password: ""
+        Password: "",
     };
 
     constructor(tempArg) {
@@ -60,7 +60,7 @@ function readPage(html) {
             table.querySelectorAll("tr")
         );
 
-        properties = tableList.map(tr => {
+        properties = tableList.map((tr) => {
             const propName = tr.querySelector("th").textContent;
             const csplit = Array.prototype.slice
                 .call(tr.classList)[1]
@@ -80,7 +80,7 @@ function readPage(html) {
             } else if (propType === "multi_select") {
                 const spans = tr.querySelectorAll("td span");
                 const spanArr = Array.prototype.slice.call(spans);
-                propVal = spanArr.map(span => span.textContent);
+                propVal = spanArr.map((span) => span.textContent);
             } else if (propType === "relation") {
                 const tempNodes = tr.querySelector("td a").childNodes;
                 propVal = tempNodes[tempNodes.length - 1].nodeValue;
@@ -90,7 +90,7 @@ function readPage(html) {
             const prop = {
                 propName: propName,
                 propType: propType,
-                propVal: propVal
+                propVal: propVal,
             };
             return prop;
         });
@@ -103,7 +103,7 @@ function readPage(html) {
         "PublishDate",
         "Tag",
         "AcceptComment",
-        "Password"
+        "Password",
     ];
 
     let notionProps = properties.reduce((result, curr) => {
@@ -141,13 +141,13 @@ function convertHtml(page) {
 
     //토글 전부 접기
     const toggles = article.querySelectorAll("ul.toggle>li>details");
-    toggles.forEach(toggle => toggle.removeAttribute("open"));
+    toggles.forEach((toggle) => toggle.removeAttribute("open"));
 
     //Embed 형식 변환
     const embedBlocks = article.querySelectorAll(
         "figure>div.source:not(.bookmark)"
     );
-    embedBlocks.forEach(embedBlock => {
+    embedBlocks.forEach((embedBlock) => {
         const url = embedBlock.querySelector("a").getAttribute("href");
         const embedUrl = getEmbedUrl(url);
         console.log(embedBlock);
@@ -194,13 +194,16 @@ async function replaceImage(apiClient, NotionPage, ImageList) {
     const promises = ImageList.map(async (imageData, index) => {
         const imageName = imageData.entryName;
         const htmlImage = htmlImageArr.filter(
-            fig =>
+            (fig) =>
                 decodeURI(fig.querySelector("a").getAttribute("href")) ===
                 imageName
         )[0];
         console.log(htmlImage);
         console.log(imageData);
-        const { replacer, url } = await tistory.uploadImage(apiClient, imageData);
+        const { replacer, url } = await tistory.uploadImage(
+            apiClient,
+            imageData
+        );
         //htmlImage.innerHTML = replacer;
         htmlImage.querySelector("a").setAttribute("href", url);
         htmlImage.querySelector("img").setAttribute("src", url);
@@ -214,5 +217,5 @@ module.exports = {
     NotionPage,
     readHtml: readPage,
     convertToPost,
-    replaceImage
+    replaceImage,
 };
