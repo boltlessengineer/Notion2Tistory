@@ -1,15 +1,6 @@
 const request = require("request");
 const { BrowserWindow } = require("electron").remote;
 
-class User {
-    constructor(accessToken, blogName) {
-        this.accessToken = accessToken;
-        this.blogName = blogName;
-    }
-}
-
-let usr;
-
 const TISTORY_OAUTH =
     "https://www.tistory.com/oauth/authorize?client_id=ff97cbe9c5811dbf23fc9f9622f3d675&redirect_uri=http://boltlessengineer.tistory.com&response_type=token";
 
@@ -62,19 +53,7 @@ const getAccessToken = () => {
     });
 };
 
-const getBlogName = () => {
-    return "boltlessengineer";
-    //[ToDo] 이거 입력받는 창 만들기 (이후엔 목록 긁어와서 선택 가능하게)
-};
-
-const getUser = async () => {
-    const accessToken = await getAccessToken();
-    const blogName = await getBlogName();
-    usr = new User(accessToken, blogName);
-    console.log(usr);
-};
-
-const findCategory = async categoryName => {
+const findCategory = async (usr, categoryName) => {
     const categoryId = "";
     const query = {
         access_token: usr.accessToken,
@@ -120,9 +99,11 @@ const findCategory = async categoryName => {
     }
 };
 
-const uploadData = data => {
+const uploadData = (usr, data) => {
     // data : { value: buffer, options: { filename, } }
+    console.log(data);
     const requestUri = "https://www.tistory.com/apis/post/attach";
+    console.log(usr);
     const formData = {
         access_token: usr.accessToken,
         output: "json",
@@ -148,8 +129,9 @@ const uploadData = data => {
     });
 };
 
-const uploadImage = async data => {
-    const resBody = await uploadData(data);
+const uploadImage = async (usr, data) => {
+    console.log(data);
+    const resBody = await uploadData(usr, data);
     const url = resBody.url;
     const replacer = getImageReplacer(url);
     return replacer;
@@ -163,8 +145,8 @@ const getImageReplacer = url => {
     return { replacer, url: newUrl };
 };
 
-const uploadPost = async notionPage => {
-    const categoryId = await findCategory(notionPage.Category);
+const uploadPost = async (usr, notionPage) => {
+    const categoryId = await findCategory(usr, notionPage.Category);
     console.log(categoryId);
     console.log("start");
     console.log(`Publish Date : ${notionPage.PublishDate}`);
@@ -197,29 +179,33 @@ const uploadPost = async notionPage => {
     };
     console.log(form);
 
-    request(
-        {
-            uri: "https://www.tistory.com/apis/post/write",
-            method: "POST",
-            form: form
-        },
-        (err, res, body) => {
-            const resBody = JSON.parse(body).tistory;
-            if (resBody.status != 200) {
-                console.log(
-                    `Error [${resBody.status}] : ${resBody.error_message}`
-                );
-            } else {
-                console.log(resBody);
+    return new Promise((resolve, reject) => {
+        request(
+            {
+                uri: "https://www.tistory.com/apis/post/write",
+                method: "POST",
+                form: form
+            },
+            (err, res, body) => {
+                const resBody = JSON.parse(body).tistory;
+                if (resBody.status != 200) {
+                    const error = `Error [${resBody.status}] : ${resBody.error_message}`;
+                    console.log(error);
+                    reject(error);
+                } else {
+                    console.log(resBody);
+
+                    const postUrl = resBody.url;
+                    resolve(postUrl);
+                }
             }
-        }
-    );
+        );
+    });
 };
 
 module.exports = {
-    send: uploadPost,
-    user: usr,
-    getUser: getUser,
+    getAccessToken,
+    uploadPost,
     uploadData,
     uploadImage
 };

@@ -37,17 +37,38 @@ const handleCopy = async notionPage => {
     });
 };
 
-const handleUpload = async ({notionPage, imageList}) => {
-    if (!tistory.user) {
-        await tistory.getUser();
-    }
-    const convertedPage = await replaceImage(notionPage, imageList);
-    await tistory.send(notionPage);
+let tistoryClient = { accessToken: "", blogName: "" };
+
+const isTistoryUser = () => {
+    return tistoryClient.accessToken && tistoryClient.blogName;
+};
+
+const handleLogin = async () => {
+    tistoryClient.accessToken = await tistory.getAccessToken();
+};
+
+const handleBlogName = blogName => {
+    console.log(blogName);
+    tistoryClient.blogName = blogName;
+};
+
+const handleUpload = async ({ notionPage, imageList }) => {
+    const convertedPage = await replaceImage(
+        tistoryClient,
+        notionPage,
+        imageList
+    );
+    const postUrl = await tistory.uploadPost(tistoryClient, notionPage);
+    console.log(postUrl);
     console.log("upload done!");
+    return postUrl;
 };
 
 module.exports = {
     handleDownload,
     handleCopy,
-    handleUpload
+    handleUpload,
+    handleLogin,
+    handleBlogName,
+    isTistoryUser
 };
