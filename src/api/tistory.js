@@ -2,7 +2,7 @@ const request = require("request");
 const { BrowserWindow } = require("electron").remote;
 
 const TISTORY_OAUTH =
-    "https://www.tistory.com/oauth/authorize?client_id=ff97cbe9c5811dbf23fc9f9622f3d675&redirect_uri=http://boltlessengineer.tistory.com&response_type=token";
+    "http://www.tistory.com/oauth/authorize?client_id=ff97cbe9c5811dbf23fc9f9622f3d675&redirect_uri=http://boltlessengineer.tistory.com&response_type=token";
 
 //should use this. or use `${}` way.
 const urlparams = {
