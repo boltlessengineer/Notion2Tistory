@@ -2,12 +2,12 @@ const fs = require("fs");
 const path = require("path");
 const {
     remote: { dialog, app },
-    clipboard
+    clipboard,
 } = require("electron");
 const tistory = require("../api/tistory.js");
-const { replaceImage } = require("../converter.js");
+const { replaceImage, maketoHTMLdocument } = require("../converter.js");
 
-const handleDownload = async notionPage => {
+const handleDownload = async (notionPage) => {
     let saveName = notionPage.Title;
     //특수문자 제거 정규식
     const reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
@@ -17,9 +17,12 @@ const handleDownload = async notionPage => {
     const savePath = await dialog.showSaveDialogSync({
         title: "Save converted HTML file",
         defaultPath: path.join(app.getPath("documents"), saveName + ".html"),
-        filters: [{ name: "HTML", extensions: ["html"] }]
+        filters: [{ name: "HTML", extensions: ["html"] }],
     });
-    fs.writeFile(savePath, notionPage.content.outerHTML, "utf8", err => {
+
+    const htmldoc = maketoHTMLdocument(notionPage.content.outerHTML);
+
+    fs.writeFile(savePath, htmldoc, "utf8", (err) => {
         if (err === null) {
             console.log("success");
         } else {
@@ -28,12 +31,12 @@ const handleDownload = async notionPage => {
     });
 };
 
-const handleCopy = async notionPage => {
+const handleCopy = async (notionPage) => {
     clipboard.writeText(notionPage.content.outerHTML);
     console.log("clipboard copied!");
     await dialog.showMessageBox({
         title: "HTML Copied!",
-        message: "COPIED!"
+        message: "COPIED!",
     });
 };
 
@@ -47,7 +50,7 @@ const handleLogin = async () => {
     tistoryClient.accessToken = await tistory.getAccessToken();
 };
 
-const handleBlogName = blogName => {
+const handleBlogName = (blogName) => {
     console.log(blogName);
     tistoryClient.blogName = blogName;
 };
@@ -70,5 +73,5 @@ module.exports = {
     handleUpload,
     handleLogin,
     handleBlogName,
-    isTistoryUser
+    isTistoryUser,
 };

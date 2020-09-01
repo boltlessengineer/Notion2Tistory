@@ -1,6 +1,8 @@
 const { JSDOM } = require("jsdom");
 const tistory = require("./api/tistory.js");
 
+const N2T_STYLE = `https://boltlessengineer.github.io/Notion2Tistory/assets/n2t_style_v0.11.0.css`;
+
 class NotionPage {
     static defaultPage = {
         Title: "Notion2Tistory Post",
@@ -212,9 +214,14 @@ async function replaceImage(apiClient, NotionPage, ImageList) {
     console.log("done!");
 }
 
+function maketoHTMLdocument(article) {
+    return `<!DOCTYPE html><html lang="ko"><head><link rel="stylesheet" href="${N2T_STYLE}" /></head><body>${article}</body></html>`;
+}
+
 module.exports = {
     NotionPage,
     readHtml: readPage,
     convertToPost,
     replaceImage,
+    maketoHTMLdocument,
 };
