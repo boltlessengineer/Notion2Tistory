@@ -1,8 +1,17 @@
 const request = require("request");
 const { BrowserWindow } = require("electron").remote;
 
-const TISTORY_OAUTH =
-    "http://www.tistory.com/oauth/authorize?client_id=ff97cbe9c5811dbf23fc9f9622f3d675&redirect_uri=http://boltlessengineer.tistory.com&response_type=token";
+const AUTHORIZE_URL = "https://www.tistory.com/oauth/authorize";
+const CLIENT_ID = "ff97cbe9c5811dbf23fc9f9622f3d675";
+const CLIENT_SECRET =
+    "ff97cbe9c5811dbf23fc9f9622f3d6758fd84a4f15439f76e49ccc03b01e38a425ac1dbc";
+const REDIRECT_URL = "http://boltlessengineer.tistory.com";
+
+// Implicit 방식
+const IMPLICIT_OAUTH = `${AUTHORIZE_URL}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&response_type=token`;
+
+// Authorization code 방식
+const CODE_OAUTH = `${AUTHORIZE_URL}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&response_type=code`;
 
 //should use this. or use `${}` way.
 const urlparams = {
@@ -11,7 +20,84 @@ const urlparams = {
     response_type: "token",
 };
 
-const getAccessToken = () => {
+const getAccessCode = () => {
+    return new Promise((res, rej) => {
+        const authWin = new BrowserWindow({
+            width: 1000,
+            height: 800,
+            show: false,
+            "node-integration": false,
+        });
+
+        authWin.setMenu(null);
+
+        const handleNavigation = (url) => {
+            const raw_code = /\?code=([^&]*)/.exec(url);
+            const accessCode =
+                raw_code && raw_code.length > 1 ? raw_code[1] : null;
+
+            if (accessCode) {
+                console.log(`access code : ${accessCode}`);
+                authWin.close();
+                res(accessCode);
+            } else {
+                authWin.show();
+            }
+        };
+        authWin.loadURL(CODE_OAUTH);
+
+        authWin.webContents.on("did-navigate", (event, url) => {
+            console.log("did-navigate");
+            console.log(url);
+            handleNavigation(url);
+        });
+
+        authWin.webContents.on(
+            "did-get-redirect-request",
+            (event, oldUrl, newUrl) => {
+                console.log("did-get-redirect-request");
+                handleNavigation(newUrl);
+            }
+        );
+    });
+};
+
+const getTokenFromCode = (accessCode) => {
+    return new Promise((res, rej) => {
+        const options = {
+            uri: "https://www.tistory.com/oauth/access_token",
+            qs: {
+                client_id: CLIENT_ID,
+                client_secret: CLIENT_SECRET,
+                redirect_uri: REDIRECT_URL,
+                code: accessCode,
+                grant_type: "authorization_code",
+            },
+        };
+        request(options, (err, response, body) => {
+            const raw_token = /access_token=([^&]*)/.exec(body);
+            console.log(raw_token);
+            const accessToken =
+                raw_token && raw_token.length > 1 ? raw_token[1] : null;
+            if (accessToken) {
+                res(accessToken);
+            } else {
+                console.log(err);
+                console.log(response);
+                console.log(body);
+                rej("error");
+            }
+        });
+    });
+};
+
+const getAccessToken = async () => {
+    const code = await getAccessCode();
+    console.log(code);
+    return getTokenFromCode(code);
+};
+
+const getAccessToken_Implicit = () => {
     // [ToDo]
     // 나중에 로그인 창(브라우저) 띄우는건 index.js로 옮기거나
     // window 창만 관리하는 js파일을 따로 만들것!
