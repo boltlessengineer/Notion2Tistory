@@ -5,6 +5,7 @@
 -   [개요](#개요)
 -   [사용 방법](#사용-방법)
 -   [더보기](#더보기)
+-   [연락하기](#연락하기)
 
 ## 개요
 
@@ -22,7 +23,7 @@
 | Category    |           | 카테고리 이름                                                            |
 | PublishDate | 날짜      | 발행시간 (미래의 시간을 넣을 경우 예약글로 등록)                         |
 | Tag         | 다중 선택 | 태그                                                                     |
-| Comment     | 체크박스  | 댓글 허용 (✅ - 기본값)                                                   |
+| Comment     | 체크박스  | 댓글 허용 (✅ - 기본값)                                                  |
 | Password    | 텍스트    | 보호글 비밀번호                                                          |
 
 <br/>
@@ -33,27 +34,27 @@
 티스토리 블로그 `설정` -> `꾸미기` -> `스킨 편집` 에 들어가서 `HTML 편집`의 `HTML` 란 `<head>` 아래에 다음 코드를 붙여넣습니다.
 
 ```html
-<link rel="stylesheet" href="https://boltlessengineer.github.io/Notion2Tistory/assets/n2t_style_v0.11.0.css" />
+<link
+    rel="stylesheet"
+    href="https://boltlessengineer.github.io/Notion2Tistory/assets/n2t_style_v0.11.0.css"
+/>
 ```
 
 `적용` 버튼을 누르시고 나면 앞으로 Notion2Tistory로 업로드하는 모든 글에 Notion 스타일이 적용됩니다.
 
-
 <br/>
 <br/>
-
----
 
 ## 더보기
 
+[<img height="32" width="32" src="https://raw.githubusercontent.com/iconic/open-iconic/master/svg/globe.svg" />](https://boltlessengineer.github.io/Notion2Tistory/ "공식 홈페이지")
 [<img height="32" width="32" src="https://unpkg.com/simple-icons@v3/icons/notion.svg" />](https://www.notion.so/boltlessengineer/Notion2Tistory-f46185df1db14f8eb571d366b66c5e9c "Notion 페이지")
 [<img height="32" widht="32" src="assets\images\svg\tistory_fill_black.svg" />](https://boltlessengineer.tistory.com/category/%EA%B0%9C%EB%B0%9C%20%EC%9D%BC%EC%A7%80/Notion%20to%20Tistory "티스토리 블로그")
 
----
+<br/>
+<br/>
 
-## Contact
-
-~~연락수단을 나타내는 "Contact"를 뭐라고 해야할지 모르겠다~~
+## 연락하기
 
 [<img height="32" width="32" src="https://unpkg.com/simple-icons@v3/icons/gmail.svg" />](mailto:boltlessengineer@gmail.com "메일 보내기")
 [<img height="32" widht="32" src="assets\images\svg\tistory_fill_black.svg" />](https://boltlessengineer.tistory.com "티스토리 블로그")
