@@ -1,7 +1,11 @@
+const { app } = require("electron").remote;
 const { JSDOM } = require("jsdom");
 const tistory = require("./api/tistory.js");
 
-const N2T_STYLE = `https://boltlessengineer.github.io/Notion2Tistory/assets/n2t_style_v0.11.0.css`;
+const APP_VERSION = app.getVersion();
+const HOMEPAGE = "https://boltlessengineer.github.io/Notion2Tistory";
+
+const N2T_STYLE = `${HOMEPAGE}/assets/n2t_style_v0.11.0.css`;
 
 class NotionPage {
     static defaultPage = {
@@ -44,8 +48,7 @@ function readPage(html) {
     //끝에 주석 추가
     const comment = notiondoc.createElement("div");
     comment.classList.add("n2t_comment");
-    comment.innerHTML =
-        '<p>\n</p><p class="block-color-gray"><a href="https://boltlessengineer.tistory.com">Uploaded by Notion2Tistory v0.10</a></p>';
+    comment.innerHTML = `<p>\n</p><p class="block-color-gray"><a href="${HOMEPAGE}">Uploaded by Notion2Tistory v${APP_VERSION}</a></p>`;
     //[ToDo]
     //👆 app.getVersion() 으로 버전 직접 가져와서 합치기
     article.querySelector("div.page-body").appendChild(comment);
