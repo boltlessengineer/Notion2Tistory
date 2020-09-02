@@ -15,6 +15,10 @@
         "url": "https://boltlessengineer.tistory.com"
     },
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/boltlessengineer/Notion2Tistory"
+    },
     "main": "src/index.js",
     "scripts": {
         "start": "electron-forge start",
