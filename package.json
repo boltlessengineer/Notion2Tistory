@@ -1,7 +1,7 @@
 {
     "name": "notion2tistory",
     "productName": "Notion2Tistory",
-    "version": "0.11.2-alpha",
+    "version": "0.11.3-alpha",
     "description": "Notion to Tistory. Converts notion html file to upload to Tistory",
     "keywords": [
         "notion",
@@ -17,7 +17,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/boltlessengineer/Notion2Tistory"
+        "url": "https://github.com/boltlessengineer/Notion2Tistory.git"
     },
     "main": "src/index.js",
     "scripts": {
@@ -86,6 +86,7 @@
     },
     "dependencies": {
         "adm-zip": "^0.4.16",
+        "electron-log": "^4.2.4",
         "electron-squirrel-startup": "^1.0.0",
         "electron-updater": "^4.3.4",
         "jsdom": "^16.4.0"
@@ -96,6 +97,7 @@
         "@electron-forge/maker-rpm": "6.0.0-beta.52",
         "@electron-forge/maker-squirrel": "6.0.0-beta.52",
         "@electron-forge/maker-zip": "6.0.0-beta.52",
-        "electron": "9.2.1"
+        "electron": "9.2.1",
+        "electron-builder": "^22.8.0"
     }
 }
