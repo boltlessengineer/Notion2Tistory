@@ -13,13 +13,6 @@ const IMPLICIT_OAUTH = `${AUTHORIZE_URL}?client_id=${CLIENT_ID}&redirect_uri=${R
 // Authorization code 방식
 const CODE_OAUTH = `${AUTHORIZE_URL}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&response_type=code`;
 
-//should use this. or use `${}` way.
-const urlparams = {
-    client_id: "ff97cbe9c5811dbf23fc9f9622f3d675",
-    redirect_uri: "https://boltlessengineer.tistory.com",
-    response_type: "token",
-};
-
 const getAccessCode = () => {
     return new Promise((res, rej) => {
         const authWin = new BrowserWindow({
