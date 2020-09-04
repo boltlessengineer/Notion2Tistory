@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, dialog } = require("electron");
 const path = require("path");
 const { checkUpdate } = require("./myUpdateChecker");
 
@@ -8,9 +8,11 @@ if (require("electron-squirrel-startup")) {
     app.quit();
 }
 
+let mainWindow;
+
 const createWindow = () => {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: 460,
         height: 320,
         webPreferences: {
@@ -33,7 +35,23 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
     createWindow();
-    checkUpdate();
+    const updateUrl = await checkUpdate();
+    if (updateUrl) {
+        const option = {
+            type: "question",
+            buttons: ["업데이트", "취소"],
+            defaultId: 0,
+            title: "electron-updater",
+            message: "업데이트가 있습니다. 프로그램을 업데이트 하시겠습니까?",
+        };
+        const wouldUpdate = await dialog.showMessageBox(mainWindow, option);
+
+        if (wouldUpdate === 0) {
+            // opening latest release download page here
+            require("electron").shell.openExternal(updateUrl);
+            app.quit();
+        }
+    }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
