@@ -36,7 +36,7 @@
 ```html
 <link
     rel="stylesheet"
-    href="https://boltlessengineer.github.io/Notion2Tistory/assets/n2t_style_v0.11.0.css"
+    href="https://boltlessengineer.github.io/Notion2Tistory/assets/n2t_style.css"
 />
 ```
 
