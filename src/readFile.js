@@ -16,6 +16,7 @@ function readFile(filePath) {
     let imageList = [];
     console.log(filePath);
     zipEntries.forEach((zipEntry) => {
+        console.log(zipEntry);
         if (zipEntry.entryName === zipEntry.name) {
             if (zipEntry.name.indexOf(".html") !== -1) {
                 console.log(zipEntry.name + " is main page html file!");
@@ -26,9 +27,19 @@ function readFile(filePath) {
                 const imageName = zipEntry.name;
                 const imageEntry = zipEntry.entryName;
                 const imageBuffer = zipEntry.getData();
+                const imageExtension = imageName.split(".").pop();
+                let imageHtml = "";
+                // svg 파일은 png로 변환!
+                if (imageExtension === "svg") {
+                    // convert to url
+                    imageHtml = imageBuffer.toString("utf8");
+                    console.log(imageHtml);
+                }
+                console.log(imageHtml);
                 const imageData = {
                     entryName: imageEntry,
                     value: imageBuffer,
+                    imageHtml: imageHtml,
                     options: { filename: imageName },
                 };
                 imageList.push(imageData);

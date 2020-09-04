@@ -17,7 +17,6 @@ const checkUpdate = async () => {
             } else {
                 console.log(`Latest release version  : ${resBody.tag_name}`);
                 console.log(`Current app version     : ${curr_version}`);
-                // 0.1.3과 0.11.3은 어떻게 비교하려고?
                 const latestV = resBody.tag_name;
                 const currentV = curr_version;
                 if (compareVersions(latestV, currentV)) {

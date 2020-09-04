@@ -49,8 +49,7 @@ function readPage(html) {
     const comment = notiondoc.createElement("div");
     comment.classList.add("n2t_comment");
     comment.innerHTML = `<p>\n</p><p class="block-color-gray"><a href="${HOMEPAGE}">Uploaded by Notion2Tistory v${APP_VERSION}</a></p>`;
-    //[ToDo]
-    //👆 app.getVersion() 으로 버전 직접 가져와서 합치기
+
     article.querySelector("div.page-body").appendChild(comment);
 
     const header = notiondoc.querySelector("header");
@@ -197,20 +196,26 @@ async function replaceImage(apiClient, NotionPage, ImageList) {
     console.log(htmlImageArr);
     const promises = ImageList.map(async (imageData, index) => {
         const imageName = imageData.entryName;
-        const htmlImage = htmlImageArr.filter(
-            (fig) =>
-                decodeURI(fig.querySelector("a").getAttribute("href")) ===
-                imageName
-        )[0];
+        const htmlImage = htmlImageArr.filter((fig) => {
+            const atag = fig.querySelector("a");
+            if (!atag) {
+                return false;
+            }
+            const url = decodeURI(atag.getAttribute("href"));
+            return url === imageName ? true : false;
+        })[0];
         console.log(htmlImage);
         console.log(imageData);
-        const { replacer, url } = await tistory.uploadImage(
-            apiClient,
-            imageData
-        );
-        //htmlImage.innerHTML = replacer;
-        htmlImage.querySelector("a").setAttribute("href", url);
-        htmlImage.querySelector("img").setAttribute("src", url);
+        if (imageData.imageHtml) {
+            // do stuff
+            console.log("already has replacer");
+            htmlImage.innerHTML = imageData.imageHtml;
+        } else {
+            console.log("getting url");
+            const { url } = await tistory.uploadImage(apiClient, imageData);
+            htmlImage.querySelector("a").setAttribute("href", url);
+            htmlImage.querySelector("img").setAttribute("src", url);
+        }
     });
     await Promise.all(promises);
     console.log(NotionPage.content.outerHTML);
