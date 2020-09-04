@@ -46,8 +46,7 @@ app.on("ready", async () => {
         };
         const wouldUpdate = await dialog.showMessageBox(mainWindow, option);
 
-        if (wouldUpdate === 0) {
-            // opening latest release download page here
+        if (wouldUpdate.response === 0) {
             require("electron").shell.openExternal(updateUrl);
             app.quit();
         }
