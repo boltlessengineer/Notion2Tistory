@@ -113,6 +113,7 @@ uploadBtn.addEventListener("click", async () => {
     if (!isTistoryUser()) {
         changePage("loginPage");
     } else {
+        changeComment("티스토리에 업로드 중...");
         const postUrl = await handleUpload(convertedPage);
         const blogLink = `<span class="aTag" onclick="openLink('${postUrl}')">업로드된 포스트 보러가기</span>`;
         changeComment(blogLink);

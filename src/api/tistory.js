@@ -8,6 +8,7 @@ const CLIENT_SECRET =
 const REDIRECT_URL = "http://boltlessengineer.tistory.com";
 
 // Implicit 방식
+// 티스토리에서 더이상 지원하지 않음
 const IMPLICIT_OAUTH = `${AUTHORIZE_URL}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&response_type=token`;
 
 // Authorization code 방식
