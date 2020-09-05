@@ -26,6 +26,11 @@ const getAccessCode = () => {
         authWin.setMenu(null);
 
         const handleNavigation = (url) => {
+            // 원하던대로 갔으면 그대로 실행하고
+            // 이상한대로 갔으면(로그인창 조차 아닌 경우) 창 닫기
+            authWin.webContents.executeJavaScript(
+                "(" + logoutBtn.toString() + ")()"
+            );
             const raw_code = /\?code=([^&]*)/.exec(url);
             const accessCode =
                 raw_code && raw_code.length > 1 ? raw_code[1] : null;
@@ -131,6 +136,17 @@ const getAccessToken_Implicit = () => {
             }
         );
     });
+};
+
+const logoutBtn = () => {
+    const btn = document.createElement("div");
+    btn.style =
+        "display: flex; width: 60px; height: 60px; position: fixed; right: 20px; bottom: 20px; border-radius: 50%; background-color: rgb(240, 240, 240); align-items: center; justify-content: center";
+    btn.innerHTML = "logout";
+    btn.addEventListener("click", () => {
+        window.location.href = "https://www.tistory.com/auth/logout";
+    });
+    document.body.appendChild(btn);
 };
 
 const findCategory = async (usr, categoryName) => {
