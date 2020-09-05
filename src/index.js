@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog } = require("electron");
+const { app, BrowserWindow, dialog, Menu, shell } = require("electron");
 const path = require("path");
 const { checkUpdate } = require("./myUpdateChecker");
 
@@ -21,13 +21,46 @@ const createWindow = () => {
         icon: path.join(__dirname, "../assets/icons/png/icon.png"),
     });
 
-    mainWindow.setMenu(null);
+    const menu = Menu.buildFromTemplate([
+        {
+            label: "도움말",
+            submenu: [
+                {
+                    label: "웹사이트",
+                    click: () => {
+                        shell.openExternal(
+                            "https://boltlessengineer.github.io/Notion2Tistory"
+                        );
+                    },
+                },
+                {
+                    label: "사용법",
+                    click: () => {
+                        shell.openExternal(
+                            "https://www.notion.so/boltlessengineer/Notion2Tistory-0fca7a4a72fc4a2abfc02f58f4c63501"
+                        );
+                        // [ToDo]
+                        // 이거 url도 github page로 관리. 그래야 나중에 사이트가 바껴도 문제가 없음
+                    },
+                },
+            ],
+        },
+        {
+            label: "",
+            accelerator: "CmdOrCtrl+Shift+I",
+            click: () => {
+                mainWindow.webContents.openDevTools();
+            },
+        },
+    ]);
+
+    mainWindow.setMenu(menu);
 
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, "index.html"));
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished
@@ -47,7 +80,7 @@ app.on("ready", async () => {
         const wouldUpdate = await dialog.showMessageBox(mainWindow, option);
 
         if (wouldUpdate.response === 0) {
-            require("electron").shell.openExternal(updateUrl);
+            shell.openExternal(updateUrl);
             app.quit();
         }
     }

@@ -26,6 +26,7 @@ const getAccessCode = () => {
         authWin.setMenu(null);
 
         const handleNavigation = (url) => {
+            console.log(url);
             // 원하던대로 갔으면 그대로 실행하고
             // 이상한대로 갔으면(로그인창 조차 아닌 경우) 창 닫기
             authWin.webContents.executeJavaScript(
@@ -47,7 +48,6 @@ const getAccessCode = () => {
 
         authWin.webContents.on("did-navigate", (event, url) => {
             console.log("did-navigate");
-            console.log(url);
             handleNavigation(url);
         });
 
