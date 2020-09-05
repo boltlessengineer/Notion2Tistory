@@ -61,7 +61,7 @@ const handleUpload = async ({ notionPage, imageList }) => {
         notionPage,
         imageList
     );
-    const postUrl = await tistory.uploadPost(tistoryClient, notionPage);
+    const postUrl = await tistory.uploadPost(tistoryClient, convertedPage);
     console.log(postUrl);
     console.log("upload done!");
     return postUrl;
