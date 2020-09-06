@@ -32,7 +32,9 @@ const checkUpdate = async () => {
 };
 
 const compareVersions = (versionA, versionB) => {
-    // return true if versionA < versionB
+    // return true if versionA > versionB
+    // if vA = latest & vB = curr
+    // return true if vA > vB false if vA <= vB
     const reg = /\d+/g; //  /\d+|\-\w+/g
     versionA = versionA.match(reg);
     versionB = versionB.match(reg);
@@ -45,6 +47,10 @@ const compareVersions = (versionA, versionB) => {
         console.log(`${a} vs ${b}`);
         if (a > b) {
             return true;
+        } else {
+            if (b > a) {
+                return false;
+            }
         }
     }
     return false;
