@@ -37,11 +37,8 @@ const createWindow = () => {
                     label: "사용법",
                     click: () => {
                         shell.openExternal(
-                            /*"https://boltlessengineer.github.io/Notion2Tistory/how-to-use"*/
-                            "https://www.notion.so/boltlessengineer/Notion2Tistory-0fca7a4a72fc4a2abfc02f58f4c63501"
+                            "https://boltlessengineer.github.io/Notion2Tistory/how-to-use"
                         );
-                        // [ToDo]
-                        // 이거 url도 github page로 관리. 그래야 나중에 사이트가 바껴도 문제가 없음
                     },
                 },
             ],
