@@ -37,6 +37,7 @@ const createWindow = () => {
                     label: "사용법",
                     click: () => {
                         shell.openExternal(
+                            /*"https://boltlessengineer.github.io/Notion2Tistory/how-to-use"*/
                             "https://www.notion.so/boltlessengineer/Notion2Tistory-0fca7a4a72fc4a2abfc02f58f4c63501"
                         );
                         // [ToDo]
