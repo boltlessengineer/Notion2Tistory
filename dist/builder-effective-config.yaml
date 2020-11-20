@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fa48db192e036b158236d2da47c6e16a3193efa7bdd239822d7ec61040645831
-size 411
+directories:
+  output: ./dist/
+  buildResources: ./assets/installer/
+  app: .
+productName: Notion2Tistory
+appId: com.electron.notion2tistory
+asar: true
+protocols:
+  name: Notion2Tistory
+  schemes:
+    - notion2tistory
+mac:
+  target:
+    - default
+  icon: ./assets/icons/mac/icon.icns
+dmg:
+  title: Notion2Tistory
+  icon: ./assets/icons/mac/icon.icns
+win:
+  target:
+    - zip
+    - nsis
+  icon: ./assets/icons/win/icon.ico
+linux:
+  target:
+    - AppImage
+    - deb
+    - zip
+    - tar.gz
+  icon: ./assets/icons/png/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: Notion2Tistory
+electronVersion: 9.2.1
