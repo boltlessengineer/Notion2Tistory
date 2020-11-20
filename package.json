@@ -27,7 +27,9 @@
         "make": "electron-forge make",
         "publish": "electron-forge publish",
         "lint": "echo \"No linting configured\"",
-        "build:win64": "electron-builder --win --x64"
+        "build:win64": "electron-builder --win --x64",
+        "build:linux64": "electron-builder --linux --x64",
+        "build:osx": "electron-builder --mac"
     },
     "build": {
         "productName": "Notion2Tistory",
@@ -39,12 +41,31 @@
                 "notion2tistory"
             ]
         },
+        "mac": {
+            "target": [
+                "default"
+            ],
+            "icon": "./assets/icons/mac/icon.icns"
+        },
+        "dmg": {
+            "title": "Notion2Tistory",
+            "icon": "./assets/icons/mac/icon.icns"
+        },
         "win": {
             "target": [
                 "zip",
                 "nsis"
             ],
             "icon": "./assets/icons/win/icon.ico"
+        },
+        "linux": {
+            "target": [
+                "AppImage",
+                "deb",
+                "zip",
+                "tar.gz"
+            ],
+            "icon": "./assets/icons/png/icon.png"
         },
         "nsis": {
             "oneClick": false,
