@@ -85,8 +85,11 @@ function readPage(html) {
                 const spanArr = Array.prototype.slice.call(spans);
                 propVal = spanArr.map((span) => span.textContent);
             } else if (propType === "relation") {
-                const tempNodes = tr.querySelector("td a").childNodes;
-                propVal = tempNodes[tempNodes.length - 1].nodeValue;
+                const tempNode = tr.querySelector("td a");
+                if (tempNode) {
+                    const tempNodes = tempNode.childNodes;
+                    propVal = tempNodes[tempNodes.length - 1].nodeValue;
+                }
             } else {
                 propVal = tr.querySelector("td").textContent;
             }
