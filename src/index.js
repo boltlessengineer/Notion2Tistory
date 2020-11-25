@@ -60,6 +60,14 @@ const createWindow = () => {
 						checkUpdateAndAsk();
 					}
 				},
+                {
+                    label: "개발자 블로그",
+                    click: () => {
+                        shell.openExternal(
+                            "https://boltlessengineer.tistory.com"
+                        );
+                    },
+                },
             ],
         },
     ]);
