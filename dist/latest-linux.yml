@@ -1,9 +1,0 @@
-version: 1.1.0
-files:
-  - url: Notion2Tistory-1.1.0.AppImage
-    sha512: vzSLEtJW7DNX93tVRsEtc0kwJZxjFyMQOpFnaO6CrdmUrP15OCkOEK8eRFKI5I+cfJ8UDxaCMbziubpuJQSXtA==
-    size: 77307036
-    blockMapSize: 81072
-path: Notion2Tistory-1.1.0.AppImage
-sha512: vzSLEtJW7DNX93tVRsEtc0kwJZxjFyMQOpFnaO6CrdmUrP15OCkOEK8eRFKI5I+cfJ8UDxaCMbziubpuJQSXtA==
-releaseDate: '2020-11-25T16:02:39.256Z'
