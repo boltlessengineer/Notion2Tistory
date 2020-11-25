@@ -46,6 +46,10 @@ const isTistoryUser = () => {
     return tistoryClient.accessToken && tistoryClient.blogName;
 };
 
+const removeTistoryUser = () => {
+	tistoryClient = { accessToken: "", blogName: "" };
+}
+
 const handleLogin = async () => {
     tistoryClient.accessToken = await tistory.getAccessToken();
 };

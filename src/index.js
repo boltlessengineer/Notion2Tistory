@@ -1,6 +1,7 @@
 const { app, BrowserWindow, dialog, Menu, shell } = require("electron");
 const path = require("path");
 const { checkUpdate } = require("./myUpdateChecker");
+// const { removeTistoryUser } = require("./Page/SelectAction");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -23,6 +24,18 @@ const createWindow = () => {
 
     const menu = Menu.buildFromTemplate([
         {
+            label: "보기",
+			submenu: [
+				{
+					label: "개발자 도구 토글",
+					accelerator: "CmdOrCtrl+Shift+I",
+					click: () => {
+						mainWindow.webContents.openDevTools();
+					},
+				}
+			]
+        },
+        {
             label: "도움말",
             submenu: [
                 {
@@ -41,14 +54,13 @@ const createWindow = () => {
                         );
                     },
                 },
+				{
+					label: "업데이트 확인",
+					click: () => {
+						checkUpdateAndAsk();
+					}
+				},
             ],
-        },
-        {
-            label: "",
-            accelerator: "CmdOrCtrl+Shift+I",
-            click: () => {
-                mainWindow.webContents.openDevTools();
-            },
         },
     ]);
 
@@ -103,3 +115,28 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+const checkUpdateAndAsk = async () => {
+    const updateUrl = await checkUpdate();
+    if (updateUrl) {
+        const option = {
+            type: "question",
+            buttons: ["업데이트", "취소"],
+            defaultId: 0,
+            title: "electron-updater",
+            message: "업데이트가 있습니다. 프로그램을 업데이트 하시겠습니까?",
+        };
+        const wouldUpdate = await dialog.showMessageBox(mainWindow, option);
+
+        if (wouldUpdate.response === 0) {
+            shell.openExternal(updateUrl);
+            app.quit();
+        }
+    } else {
+		const option = {
+			type: "info",
+			title: "electron-updater",
+			message: "앱이 최신 버전입니다.",
+		};
+		dialog.showMessageBox(mainWindow, option)
+	}
+}
