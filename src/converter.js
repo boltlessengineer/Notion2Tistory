@@ -209,16 +209,20 @@ async function replaceImage(apiClient, NotionPage, ImageList) {
         })[0];
         console.log(htmlImage);
         console.log(imageData);
-        if (imageData.imageHtml) {
-            // do stuff
-            console.log("already has replacer");
-            htmlImage.innerHTML = imageData.imageHtml;
-        } else {
-            console.log("getting url");
-            const { url } = await tistory.uploadImage(apiClient, imageData);
-            htmlImage.querySelector("a").setAttribute("href", url);
-            htmlImage.querySelector("img").setAttribute("src", url);
-        }
+		if (htmlImage) {
+			if (imageData.imageHtml) {
+				// do stuff
+				console.log("already has replacer");
+				htmlImage.innerHTML = imageData.imageHtml;
+			} else {
+				console.log("getting url");
+				const { url } = await tistory.uploadImage(apiClient, imageData);
+				htmlImage.querySelector("a").setAttribute("href", url);
+				htmlImage.querySelector("img").setAttribute("src", url);
+			}
+		} else {
+			console.log("can't find matching html image")
+		}
     });
     await Promise.all(promises);
     console.log(NotionPage.content.outerHTML);
